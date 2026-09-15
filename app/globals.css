@@ -79,7 +79,7 @@ body.is-booting {
 .boot-sequence-window {
   width: min(960px, 100%);
   border: 1px solid rgba(191, 211, 255, 0.3);
-  border-radius: 14px;
+  border-radius: 0;
   background: #0d0d0d;
   box-shadow:
     0 0 0 0.5px rgba(196, 214, 255, 0.22),
@@ -505,10 +505,11 @@ html.app-hydrated .typewriter-text {
 
 .scroll-indicator {
   position: fixed;
-  top: calc(8px + var(--rocket-size) / 2);
+  /* Keep the full rocket clear of the fixed navigation bar at launch. */
+  top: calc(80px + var(--rocket-size) / 2);
   right: 18px;
   width: 60px;
-  height: calc(100vh - 16px - var(--rocket-size));
+  height: calc(100vh - 88px - var(--rocket-size));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -915,64 +916,48 @@ html.app-hydrated .typewriter-text {
 }
 
 .glow-card {
-  background: #0d0d0d;
-  border-radius: 16px;
-  box-shadow:
-    0 0 0 0.5px rgba(196, 214, 255, 0.28),
-    0 1px 0 rgba(210, 228, 255, 0.12),
-    0 16px 32px rgba(0, 0, 0, 0.65),
-    inset 0 0 0 0.5px rgba(205, 223, 255, 0.09);
-  border: 1px solid rgba(191, 211, 255, 0.24);
+  background: #181616;
+  border: 1px solid #514d50;
+  border-radius: 0;
+  box-shadow: none;
   position: relative;
   overflow: hidden;
-  transition:
-    box-shadow 0.2s ease,
-    border-color 0.2s ease;
-  transform-style: preserve-3d;
-  transform-origin: center;
-  will-change: transform, box-shadow;
-  padding-top: 2.4rem;
+  padding-top: 3.3rem;
+  transition: border-color .2s ease;
 }
 
 .glow-card::before {
-  content: "Andy Do — zsh — 80x24";
+  content: attr(data-title);
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  inset: 0 0 auto;
   height: 2.1rem;
+  padding: 0 14px 0 68px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  color: #e5e5e5;
-  background: #1b1b1b;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.42);
-  border-top-left-radius: inherit;
-  border-top-right-radius: inherit;
+  justify-content: flex-end;
+  font-size: .85rem;
+  letter-spacing: .02em;
+  color: #a39b9b;
+  background: #201d1d;
+  border-bottom: 1px solid #514d50;
 }
 
 .glow-card::after {
   content: "";
   position: absolute;
-  top: 0.55rem;
-  left: 0.8rem;
-  width: 44px;
-  height: 12px;
+  top: .7rem;
+  left: 1rem;
+  width: 36px;
+  height: 9px;
   background:
-    radial-gradient(circle at 6px 6px, #ff5f57 0 6px, transparent 7px),
-    radial-gradient(circle at 22px 6px, #febc2e 0 6px, transparent 7px),
-    radial-gradient(circle at 38px 6px, #28c840 0 6px, transparent 7px);
+    radial-gradient(circle at 4px 4px, #514b4b 0 4px, transparent 4.5px),
+    radial-gradient(circle at 17px 4px, #514b4b 0 4px, transparent 4.5px),
+    radial-gradient(circle at 30px 4px, #514b4b 0 4px, transparent 4.5px);
 }
 
-.glow-card:hover {
-  box-shadow:
-    0 0 0 0.5px rgba(196, 214, 255, 0.34),
-    0 1px 0 rgba(210, 228, 255, 0.16),
-    0 20px 40px rgba(0, 0, 0, 0.54),
-    inset 0 0 0 0.5px rgba(205, 223, 255, 0.1);
-  border-color: rgba(191, 211, 255, 0.32);
+.glow-card:hover, .glow-card:focus-within {
+  border-color: #93868d;
+  box-shadow: none;
 }
 
 .tag {
@@ -1031,7 +1016,7 @@ html.app-hydrated .typewriter-text {
 
 .project-placeholder-shell {
   border: 1px solid rgba(191, 211, 255, 0.28);
-  border-radius: 10px;
+  border-radius: 0;
   overflow: hidden;
   background: #070a11;
 }
@@ -1049,7 +1034,7 @@ html.app-hydrated .typewriter-text {
 }
 
 .bio-photo-shell {
-  border-radius: 10px;
+  border-radius: 0;
   overflow: hidden;
 }
 
@@ -1058,7 +1043,7 @@ html.app-hydrated .typewriter-text {
   aspect-ratio: 3 / 4;
   object-fit: cover;
   object-position: center center;
-  border-radius: 8px;
+  border-radius: 0;
   margin-top: 0.55rem;
   display: block;
 }
@@ -1077,7 +1062,7 @@ html.app-hydrated .typewriter-text {
   width: 1.45rem;
   height: 1.45rem;
   border: 1px solid rgba(191, 211, 255, 0.4);
-  border-radius: 4px;
+  border-radius: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1105,7 +1090,7 @@ html.app-hydrated .typewriter-text {
 .nav-pill {
   border: 0;
   background: transparent;
-  border-radius: 6px;
+  border-radius: 0;
   padding: 0.2rem 0.25rem;
   font-weight: 600;
   color: var(--ink-soft);
@@ -1140,7 +1125,7 @@ html.app-hydrated .typewriter-text {
 }
 
 .footer-card {
-  border-radius: 12px;
+  border-radius: 0;
   border: 1px solid rgba(191, 211, 255, 0.24);
   background: #000000;
   color: #ffffff;
@@ -1378,4 +1363,52 @@ html.app-hydrated .typewriter-text {
     padding-right: 0;
     padding-left: 0;
   }
+}
+
+/* OpenCode-inspired terminal chrome; original pixel typography and space art. */
+:root { --ink: #eee9e9; --ink-soft: #d7d0d0; --ink-muted: #a39b9b; }
+.space-bg { background: #121010; }
+::selection { background: #b7a1cf; color: #121010; }
+:focus-visible { outline: 2px solid #b7a1cf; outline-offset: 4px; }
+.site-nav-wrap { top: 0; background: #151212f5; border-bottom: 1px solid #403b3b; }
+.site-nav { min-height: 64px; align-items: center; gap: 8px; padding: 8px 64px 8px 0; }
+.nav-wordmark { margin-right: auto; font: 18px "Press Start 2P", monospace; color: #b1a8a8; letter-spacing: -1px; }
+.nav-wordmark span { color: #eee9e9; }
+.nav-pill { padding: 7px 10px; text-transform: lowercase; font-size: 18px; letter-spacing: 0; font-weight: 400; }
+.nav-pill:hover, .nav-pill:focus-visible { background: #252020; text-shadow: none; transform: none; }
+section.container-shell { position: relative; isolation: isolate; }
+.glow-card .typewriter { overflow-wrap: anywhere; }
+.json-link-row { align-items: flex-start; }
+.json-link-anchor { min-width: 0; overflow-wrap: anywhere; }
+.json-link-icon { border-color: #514d50; background: #211d1d; }
+.project-placeholder-shell { background: #121010; border-color: #403b3b; }
+.boot-sequence-window { background: #181616; box-shadow: none; border-color: #514d50; }
+.boot-sequence-title { background: #201d1d; border-color: #514d50; color: #b1a8a8; }
+.hud-left { background: #181616; border: 1px solid #514d50; }
+.hud-bar { border: 1px solid #706969; background: #121010; }
+.hud-bar-fill { background: #b1a8a8; }
+.orbit-sprite { position: absolute; z-index: -1; pointer-events: none; width: 160px; aspect-ratio: 1; background: center / contain no-repeat; image-rendering: pixelated; opacity: .75; animation: planet-orbit 16s linear infinite; }
+.orbit-sprite--crater-moon { background-image: url('/space/crater-moon.png'); right: -64px; top: -65px; width: 128px; }
+.orbit-sprite--ice-planet { background-image: url('/space/ice-planet.png'); left: -88px; top: -48px; animation-delay: -5s; }
+.orbit-sprite--ringed-planet { background-image: url('/space/ringed-planet.png'); right: 8%; top: -48px; width: 192px; animation-delay: -9s; }
+.space-credits { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-top: 1px solid #403b3b; padding: 24px 0 36px; color: #aaa0a0; font-size: 14px; }
+.space-credits a { text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 900px) {
+  .site-nav { gap: 2px; padding-right: 46px; }
+  .nav-pill { padding: 6px 7px; font-size: 16px; }
+  .nav-wordmark { font-size: 14px; }
+}
+@media (max-width: 640px) {
+  .site-nav { padding: 8px 0; justify-content: center; }
+  #welcome { padding-top: 32px; }
+  .nav-wordmark { width: 100%; text-align: center; padding: 7px 0; }
+  .nav-pill { font-size: 15px; padding: 4px 6px; }
+  .orbit-sprite--crater-moon { right: -30px; width: 96px; top: -30px; }
+  .orbit-sprite--ice-planet { left: -40px; width: 112px; }
+  .orbit-sprite--ringed-planet { right: -20px; top: -30px; width: 128px; }
+  .space-credits { padding-bottom: 26px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .window-tilt { transform: none !important; }
 }

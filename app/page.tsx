@@ -13,8 +13,7 @@ const scrollToSection = (hash: string) => {
   if (typeof window === "undefined") return;
   const target = document.querySelector(hash);
   if (!target) return;
-  const top = target.getBoundingClientRect().top + window.scrollY;
-  window.scrollTo({ top, behavior: "smooth" });
+  target.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
 };
 const resumeProjects = [
   {
@@ -669,7 +668,8 @@ export default function Home() {
       <div className="relative z-10">
         <div className="site-nav-wrap">
           <div className="container-shell">
-            <nav className="site-nav">
+            <nav className="site-nav" aria-label="Portfolio sections">
+              <a className="nav-wordmark" href="#welcome" aria-label="Andy Do home">andy<span>do</span></a>
               {navItems.map((item) => (
                 <button
                   key={item.href}
@@ -728,7 +728,7 @@ export default function Home() {
               </div>
             </FadeIn>
             <FadeIn delay={0.2}>
-              <div className="glow-card window-tilt window-tilt-small p-6 sm:p-8 space-y-6">
+              <div data-title="~/links.json" className="glow-card window-tilt window-tilt-small p-6 sm:p-8 space-y-6">
                 <div className="space-y-3">
                   <Typewriter as="p" className="text-body-violet" text="{" animate />
                   {profileLinks.map((item, index) => (
@@ -770,7 +770,7 @@ export default function Home() {
           </FadeIn>
           <div className="mt-10 grid gap-6 lg:grid-cols-[0.62fr_1.38fr]">
             <FadeIn delay={0.06}>
-              <div className="glow-card window-tilt window-tilt-small bio-photo-card p-4 sm:p-5">
+              <div data-title="~/andy.png" className="glow-card window-tilt window-tilt-small bio-photo-card p-4 sm:p-5">
                 <div className="bio-photo-shell">
                   <img
                     src="/andy.png"
@@ -781,7 +781,7 @@ export default function Home() {
               </div>
             </FadeIn>
             <FadeIn delay={0.1}>
-              <div className="glow-card window-tilt window-tilt-large p-7 sm:p-9">
+              <div data-title="~/bio.json" className="glow-card window-tilt window-tilt-large p-7 sm:p-9">
                 <div className="space-y-3">
                   <Typewriter
                     as="p"
@@ -825,6 +825,7 @@ export default function Home() {
           </div>
         </section>
         <section id="experience" className="container-shell py-14 sm:py-20">
+          <div className="orbit-sprite orbit-sprite--crater-moon" aria-hidden="true" />
           <FadeIn>
             <Typewriter
               text="experience"
@@ -835,7 +836,7 @@ export default function Home() {
           </FadeIn>
           <div className="mt-10">
             <FadeIn delay={0.08}>
-              <div className="glow-card window-tilt window-tilt-large p-7 sm:p-9">
+              <div data-title="~/experience.json" className="glow-card window-tilt window-tilt-large p-7 sm:p-9">
                 <div className="space-y-2">
                   <Typewriter as="p" className="text-body-violet" text="{" animate />
                   <Typewriter as="p" className="text-body-cyan" text='  "experience": [' animate />
@@ -889,6 +890,7 @@ export default function Home() {
           </div>
         </section>
         <section id="technical-skills" className="container-shell py-14 sm:py-20">
+          <div className="orbit-sprite orbit-sprite--ice-planet" aria-hidden="true" />
           <FadeIn>
             <Typewriter
               text="skillz"
@@ -899,7 +901,7 @@ export default function Home() {
           </FadeIn>
           <div className="mt-10">
             <FadeIn delay={0.08}>
-              <div className="glow-card window-tilt window-tilt-large p-7 sm:p-9">
+              <div data-title="~/skills.json" className="glow-card window-tilt window-tilt-large p-7 sm:p-9">
                 <div className="space-y-2">
                   <Typewriter as="p" className="text-body-violet" text="{" animate />
                   <Typewriter
@@ -939,7 +941,7 @@ export default function Home() {
           <div className="mt-10 grid gap-6 lg:grid-cols-2">
             {resumeProjects.map((project, index) => (
               <FadeIn key={project.title} delay={0.05 * index}>
-                <div className="glow-card window-tilt window-tilt-small h-full p-6 sm:p-7 flex flex-col gap-5">
+                <div data-title={`~/projects/${project.title.toLowerCase()}`} className="glow-card window-tilt window-tilt-small h-full p-6 sm:p-7 flex flex-col gap-5">
                   <div className="flex flex-wrap items-baseline justify-between gap-3">
                     <Typewriter
                       as="h3"
@@ -970,7 +972,7 @@ export default function Home() {
                     <img
                       src={project.image}
                       alt={`${project.title} UI`}
-                      className="project-placeholder-image"
+                      className="project-placeholder-image" loading="lazy"
                     />
                   </div>
                   <div className="space-y-2">
@@ -1010,6 +1012,7 @@ export default function Home() {
           </div>
         </section>
         <section id="music" className="container-shell py-14 sm:py-20">
+          <div className="orbit-sprite orbit-sprite--ringed-planet" aria-hidden="true" />
           <FadeIn>
             <Typewriter
               text="music (my personal top 5)"
@@ -1021,12 +1024,12 @@ export default function Home() {
           <div className="mt-10 grid gap-6 lg:grid-cols-2">
             {musicTracks.map((track, index) => (
               <FadeIn key={track.title} delay={0.05 * index}>
-                <div className="glow-card window-tilt window-tilt-small music-card p-5 sm:p-6 space-y-4">
+                <div data-title={`~/music/track-${index + 1}`} className="glow-card window-tilt window-tilt-small music-card p-5 sm:p-6 space-y-4">
                   <div className="project-placeholder-shell">
                     <img
                       src={track.image}
                       alt={`${track.title} cover`}
-                      className="project-placeholder-image"
+                      className="project-placeholder-image" loading="lazy"
                     />
                   </div>
                   <div className="space-y-2">
@@ -1060,7 +1063,7 @@ export default function Home() {
             />
           </FadeIn>
           <FadeIn delay={0.06}>
-            <div className="glow-card window-tilt window-tilt-large mt-6 p-6 sm:p-8">
+            <div data-title="~/contact.json" className="glow-card window-tilt window-tilt-large mt-6 p-6 sm:p-8">
               <div className="space-y-2">
                 <Typewriter as="p" className="text-body-violet" text="{" animate />
                 {contactLinks.map((item, index) => (
@@ -1083,6 +1086,9 @@ export default function Home() {
           </FadeIn>
         </section>
       </div>
+      <footer className="space-credits container-shell">
+        <span>~/end of transmission</span>
+      </footer>
     </main>
     </>
   );
