@@ -1,5 +1,4 @@
 "use client";
-import { useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 const navItems = [
   { label: "welcome", href: "#welcome" },
@@ -19,6 +18,25 @@ const scrollToSection = (hash: string) => {
 };
 const resumeProjects = [
   {
+    title: "CodeLens",
+    subtitle: "Fiserv Hack Week Winner · Jun 2026",
+    url: "https://github.com/AndyBDo/codelens",
+    image: "/codelens.png",
+    toolsUsed: "Chrome Extension, LangChain, Claude Sonnet 4.5, ChromaDB, FastAPI",
+    description:
+      "Built a full-stack Chrome extension that maps live web app components to backend code flows, Jira tickets, and Confluence docs on hover, helping 8 new interns learn their assigned codebases.",
+  },
+  {
+    title: "Loci",
+    subtitle: "Full-Stack AI Platform · 2026",
+    url: "https://github.com/ethan-ngai/loci",
+    image: "/loci.png",
+    toolsUsed:
+      "TanStack Start, React, TypeScript, MongoDB Atlas, Microsoft TRELLIS, Hugging Face, Gradio, R2/S3, Three.js",
+    description:
+      "Built a full-stack platform that turns raw text and PDFs into 3D memory palaces, self-hosted Microsoft TRELLIS on cloud GPUs to generate 3D concept objects, and created an interactive Three.js world viewer for spatial studying.",
+  },
+  {
     title: "SafeStep",
     subtitle: "Brown Hacks · Feb 2026",
     url: "https://github.com/AndyDo0942/safestep",
@@ -28,23 +46,32 @@ const resumeProjects = [
       "Mapped the safest possible routes to destinations by developing a routing service that manipulates the A* algorithm and identified road hazards like potholes and ice by implementing AI agents that analyze crowdsourced imagery.",
   },
   {
-    title: "Spinder",
-    subtitle: "Big Red Hacks · Sep 2025",
-    url: "https://github.com/AndyDo0942/spinder",
-    image: "/spinder.png",
-    toolsUsed: "Flask, Spotify API, Google Gemini API",
+    title: "Alloc",
+    subtitle: "Dell x Nvidia @ Cornell · 2026",
+    url: "https://github.com/ethan-ngai/alloc",
+    image: "/alloc.png",
+    toolsUsed: "TypeScript, React, Fastify, MongoDB, Zod, Docker",
     description:
-      "Generated personalized Spotify playlists by analyzing user listening history and metadata, and enhanced user engagement by developing personalized song suggestions.",
+      "Built a local-first financial intelligence dashboard that connects company context to deterministic spending controls, auditable action intents, forecasts, and human-authorized decisions.",
+  },
+  {
+    title: "PokerCaml",
+    subtitle: "OCaml-Poker · Multiplayer TUI",
+    url: "https://github.com/jacksonliao78/poker",
+    image: "/pokercaml.png",
+    toolsUsed: "OCaml, Dune",
+    description:
+      "Built a terminal-based multiplayer poker game entirely in OCaml with a terminal UI, poker betting and winner logic, and multi-game sessions. The client/server game supports four or more players.",
   },
 ];
 const profileLinks = [
   {
     key: "GitHub",
-    href: "https://github.com/AndyDo0942",
+    href: "https://github.com/AndyBDo",
   },
   {
     key: "LinkedIn",
-    href: "https://www.linkedin.com/in/andy-do/",
+    href: "https://www.linkedin.com/in/andybdo",
   },
   {
     key: "Resume",
@@ -54,8 +81,8 @@ const profileLinks = [
 const contactLinks = [
   {
     key: "email",
-    value: "abd228@cornell.edu",
-    href: "mailto:abd228@cornell.edu",
+    value: "doandyb@gmail.com",
+    href: "mailto:doandyb@gmail.com",
   },
   {
     key: "phone number",
@@ -172,19 +199,10 @@ function Typewriter({
   persistCursor?: boolean;
   reserve?: boolean;
 }) {
-  const prefersReducedMotion = useReducedMotion();
+  void speed;
+  void delayMs;
+  void reserve;
   const ref = useRef<HTMLElement | null>(null);
-  const measureRef = useRef<HTMLSpanElement | null>(null);
-  const [active, setActive] = useState(prefersReducedMotion || !animate);
-  const [bootReady, setBootReady] = useState(() => {
-    if (typeof document === "undefined") return false;
-    return document.documentElement.classList.contains("boot-ready");
-  });
-  const [isTyping, setIsTyping] = useState(false);
-  const [reservedHeight, setReservedHeight] = useState(0);
-  const [display, setDisplay] = useState(
-    prefersReducedMotion || !animate ? text : ""
-  );
   const componentTag =
     typeof Component === "string" ? Component.toLowerCase() : "";
   const isHeading =
@@ -194,197 +212,19 @@ function Typewriter({
     componentTag === "h4" ||
     componentTag === "h5" ||
     componentTag === "h6";
-  const shouldShowCursor = animate || showCursor || isHeading;
-  const shouldType = animate && !prefersReducedMotion && bootReady;
-  const reserveSpace = reserve && shouldType && componentTag !== "span";
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const onBootReady = () => {
-      setBootReady(true);
-    };
-    window.addEventListener("boot-ready", onBootReady as EventListener);
-    return () => {
-      window.removeEventListener("boot-ready", onBootReady as EventListener);
-    };
-  }, []);
-  useEffect(() => {
-    if (!shouldType) {
-      if (animate && !bootReady) {
-        setIsTyping(false);
-        setDisplay("");
-        return;
-      }
-      setActive(true);
-      return;
-    }
-    const element = ref.current;
-    if (!element) {
-      setActive(true);
-      return;
-    }
-    let frame = 0;
-    let observer: IntersectionObserver | null = null;
-    let activated = false;
-    const observeTarget =
-      componentTag === "span" && element.parentElement
-        ? element.parentElement
-        : element;
-
-    const activate = () => {
-      if (activated) return;
-      activated = true;
-      setActive(true);
-      cleanup();
-    };
-
-    const resolveRect = () => {
-      const rect = observeTarget.getBoundingClientRect();
-      if (rect.width > 1 || rect.height > 1) return rect;
-      const parent = observeTarget.parentElement;
-      if (!parent) return rect;
-      return parent.getBoundingClientRect();
-    };
-
-    const checkVisibility = () => {
-      if (activated) return;
-      const rect = resolveRect();
-      const viewportHeight =
-        window.innerHeight || document.documentElement.clientHeight;
-      const isVisible = rect.bottom > 0 && rect.top < viewportHeight;
-      if (isVisible) activate();
-    };
-
-    const queueCheck = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(() => {
-        frame = 0;
-        checkVisibility();
-      });
-    };
-
-    function cleanup() {
-      window.removeEventListener("scroll", queueCheck);
-      window.removeEventListener("resize", queueCheck);
-      if (frame) {
-        window.cancelAnimationFrame(frame);
-        frame = 0;
-      }
-      if (observer) {
-        observer.disconnect();
-        observer = null;
-      }
-    }
-
-    const supportsObserver = "IntersectionObserver" in window;
-    if (supportsObserver) {
-      observer = new IntersectionObserver(
-        (entries) => {
-          if (entries.some((entry) => entry.isIntersecting)) activate();
-        },
-        { threshold: 0.08, rootMargin: "0px 0px -6% 0px" }
-      );
-      observer.observe(observeTarget);
-      checkVisibility();
-      return cleanup;
-    }
-
-    checkVisibility();
-    if (!activated) {
-      window.addEventListener("scroll", queueCheck, { passive: true });
-      window.addEventListener("resize", queueCheck);
-    }
-
-    return cleanup;
-  }, [shouldType, componentTag, animate, bootReady]);
-  useEffect(() => {
-    if (!shouldType) {
-      if (animate && !bootReady) {
-        setIsTyping(false);
-        setDisplay("");
-        return;
-      }
-      setIsTyping(false);
-      setDisplay(text);
-      return;
-    }
-    if (!active) {
-      setIsTyping(false);
-      setDisplay("");
-      return;
-    }
-    let timer: number | null = null;
-    let index = 0;
-    const stepSize = text.length >= 180 ? 4 : text.length >= 120 ? 3 : text.length >= 70 ? 2 : 1;
-    const interval = stepSize > 1 ? Math.max(speed, 22) : speed;
-    const start = () => {
-      setDisplay("");
-      setIsTyping(true);
-      const tick = () => {
-        index = Math.min(index + stepSize, text.length);
-        setDisplay(text.slice(0, index));
-        if (index < text.length) {
-          timer = window.setTimeout(tick, interval);
-          return;
-        }
-        setIsTyping(false);
-      };
-      tick();
-    };
-    if (delayMs > 0) {
-      timer = window.setTimeout(start, delayMs);
-    } else {
-      start();
-    }
-    return () => {
-      setIsTyping(false);
-      if (timer) window.clearTimeout(timer);
-    };
-  }, [active, shouldType, text, speed, delayMs, animate, bootReady]);
-  useEffect(() => {
-    if (!reserveSpace) {
-      setReservedHeight(0);
-      return;
-    }
-    if (typeof window === "undefined") return;
-    const measure = () => {
-      const element = measureRef.current;
-      if (!element) return;
-      const nextHeight = Math.ceil(element.getBoundingClientRect().height);
-      if (nextHeight > 0) setReservedHeight(nextHeight);
-    };
-    measure();
-    if (typeof ResizeObserver === "undefined") {
-      window.addEventListener("resize", measure);
-      return () => {
-        window.removeEventListener("resize", measure);
-      };
-    }
-    const observer = new ResizeObserver(() => measure());
-    if (ref.current) observer.observe(ref.current);
-    window.addEventListener("resize", measure);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", measure);
-    };
-  }, [reserveSpace, text]);
+  const shouldShowCursor = showCursor || isHeading;
   return (
     <Component
       ref={ref}
-      className={`typewriter ${animate ? "tw-animate" : ""} ${shouldShowCursor ? "tw-cursor" : ""} ${persistCursor ? "tw-persist" : ""} ${isTyping ? "is-typing" : ""} ${reserveSpace ? "tw-reserve-space" : ""} ${className}`.trim()}
+      className={`typewriter ${animate ? "tw-animate" : ""} ${shouldShowCursor ? "tw-cursor" : ""} ${persistCursor ? "tw-persist" : ""} ${className}`.trim()}
       style={
         {
           "--cursor-offset": `${cursorOffset}px`,
-          minHeight: reserveSpace && reservedHeight > 0 ? `${reservedHeight}px` : undefined,
         } as React.CSSProperties
       }
     >
       <span className="typewriter-fallback">{text}</span>
-      {reserveSpace ? (
-        <span ref={measureRef} className="typewriter-measure" aria-hidden="true">
-          {text}
-        </span>
-      ) : null}
-      <span className="typewriter-text">{display}</span>
+      <span className="typewriter-text">{text}</span>
     </Component>
   );
 }
@@ -880,7 +720,7 @@ export default function Home() {
                 <Typewriter
                   as="p"
                   className="hero-subtitle max-w-xl mt-4"
-                  text="Undergraduate student at Cornell studying Computer Science and Mathematics"
+                  text="Undergraduate student at Cornell studying Computer Science"
                   animate
                   showCursor
                   persistCursor
@@ -1003,13 +843,27 @@ export default function Home() {
                   <Typewriter
                     as="p"
                     className="text-body-lime"
+                    text='      "company": "Fiserv",'
+                    animate
+                  />
+                  <Typewriter
+                    as="p"
+                    className="text-body-red"
+                    text='      "role": "Software Engineer Intern · Jun 2026 - Aug 2026",'
+                    animate
+                  />
+                  <Typewriter as="p" className="text-body-violet" text="    }," animate />
+                  <Typewriter as="p" className="text-body-violet" text="    {" animate />
+                  <Typewriter
+                    as="p"
+                    className="text-body-lime"
                     text='      "company": "Lancaster Lebanon Intermediate Unit 13",'
                     animate
                   />
                   <Typewriter
                     as="p"
                     className="text-body-red"
-                    text='      "role": "Full Stack Software Engineer Intern"'
+                    text='      "role": "Software Engineer Intern · Jun 2024 - Aug 2024",'
                     animate
                   />
                   <Typewriter as="p" className="text-body-violet" text="    }," animate />
@@ -1023,21 +877,7 @@ export default function Home() {
                   <Typewriter
                     as="p"
                     className="text-body-red"
-                    text='      "role": "Machine Learning Engineer"'
-                    animate
-                  />
-                  <Typewriter as="p" className="text-body-violet" text="    }," animate />
-                  <Typewriter as="p" className="text-body-violet" text="    {" animate />
-                  <Typewriter
-                    as="p"
-                    className="text-body-lime"
-                    text='      "company": "MathWorks",'
-                    animate
-                  />
-                  <Typewriter
-                    as="p"
-                    className="text-body-red"
-                    text='      "role": "Job shadow"'
+                    text='      "role": "Machine Learning Engineer · Nov 2025 - Present",'
                     animate
                   />
                   <Typewriter as="p" className="text-body-violet" text="    }" animate />
@@ -1065,21 +905,22 @@ export default function Home() {
                   <Typewriter
                     as="p"
                     className="text-body-blue"
-                    text='  "Languages": "Java, Python, C#, C, JavaScript, TypeScript, SQL, HTML, CSS, OCaml",'
+                    text='  "Languages": "Java, Python, C#, C, JavaScript, TypeScript, SQL, HTML, CSS, OCaml, Go",'
                     animate
                   />
                   <Typewriter
                     as="p"
                     className="text-body-lime"
-                    text='  "Frameworks": "React, Node.js, NextJS, SQLAlchemy, JPA, Spring Boot, Spring AI, tRPC, Bootstrap, Flask, ASP.NET Core",'
+                    text='  "Frameworks": "React, Node.js, NextJS, TanStack, JPA, Spring Boot, tRPC, Bootstrap, Flask, ASP.NET Core, SQLAlchemy, Prisma",'
                     animate
                   />
                   <Typewriter
                     as="p"
                     className="text-body-amber"
-                    text='  "Developer Tools": "Git, Github, Docker, Open Router, VS Code, IntelliJ, Cursor, AWS, ShadCN UI, Neon Database, E2B Sandbox, Bruno"'
+                    text='  "Developer Tools": "Git, Docker, VS Code, IntelliJ, AWS, Bruno, Postman, Kubernetes, ArgoCD, Helm, Hugging Face, Cloudflare, Jira, Confluence, Agile development"'
                     animate
                   />
+                  <Typewriter as="p" className="text-body-cyan" text='  "Libraries": "Pandas, NumPy, Matplotlib, scikit-learn"' animate />
                   <Typewriter as="p" className="text-body-violet" text="}" animate />
                 </div>
               </div>
@@ -1103,10 +944,16 @@ export default function Home() {
                     <Typewriter
                       as="h3"
                       className={`text-2xl font-semibold ${
-                        project.title === "SafeStep"
-                          ? "text-body-lime"
-                          : project.title === "Spinder"
+                        project.title === "CodeLens"
+                          ? "text-body-cyan"
+                          : project.title === "Loci"
                             ? "text-body-violet"
+                            : project.title === "SafeStep"
+                          ? "text-body-lime"
+                          : project.title === "Alloc"
+                            ? "text-body-amber"
+                            : project.title === "PokerCaml"
+                              ? "text-body-red"
                             : "text-[var(--surface-ink)]"
                       }`}
                       text={project.title}
