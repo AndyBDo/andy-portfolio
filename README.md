@@ -1,36 +1,29 @@
-    This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Andy Do — Portfolio Edition
 
-## Getting Started
+Run `npm install` and `npm run dev`. Production: `npm run build` (output: `dist`). Tests: `npm test` (uses installed Google Chrome).
 
-First, run the development server:
+The supplied directory was empty. This is a new Vite/vanilla JavaScript site with Three.js for a genuinely rotating original voxel landscape.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- `src/data.js`: résumé-backed experience, projects, and skills.
+- `src/main.js`: menu, hash navigation, detail screens, advancements, print résumé, keyboard controls, and opt-in sound.
+- `src/cornell.js`: actual Minecraft block materials, campus terrain, landscaping, sunlight, shadows and camera orbit, with reduced-motion support.
+- `src/campus-buildings.js`: individually composed landmark models and surrounding academic buildings, reconstructed from the tour and campus layout.
+- `src/voxel-model.js`: joins each building's intersecting solids into an exterior mesh; hidden and overlapping faces are removed before rendering.
+- `src/campus-sky.js`: soft procedural clouds and blue atmospheric sky inspired by the recording.
+- `src/style.css`: responsive game menu presentation and print layout.
+- `src/assets/logo-portfolio.png`: transparent cleanup of the supplied Andy Do / Portfolio Edition logo.
+- `tests/menu.spec.js`: navigation and responsive smoke test.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Missing source materials: original site/repository, terminal, original résumé PDF, project screenshots, and verified project-specific repository URLs. No accomplishments or repository URLs were invented. Resume currently opens a printable page; use the browser Save as PDF option. Replace this with the original PDF when provided. No site has been deployed.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Campus reconstruction: `src/cornell.js` uses the supplied CornellCraft screen recording and Google Maps satellite references around McGraw Tower (42.4476, -76.4845) and the Arts Quad (42.4487, -76.4841). Uris, Olin, Stimson, Old Stone Row, Goldwin Smith, Sage Chapel, Day Hall, Willard Straight, Barnes, the Cornell Store and Sage Hall have distinct footprints and silhouettes. Paths and sloping westward terrain follow the reference layout. Dimensions, some distant buildings, and tree placement are approximate; this is not a world-file import or a survey-accurate model of the entire campus.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Block textures in `public/minecraft/assets/minecraft/textures/block/` are extracted unchanged from the user's local Minecraft Java 1.21.4 JAR. The tower uses pale sandstone, Sage uses red masonry, Old Stone Row and Willard use gray stone, Olin uses light quartz, and roofs use gray concrete. Grass and foliage receive biome-style color tinting. Materials repeat per world block with nearest-neighbor magnification. The clock dial is custom pixel geometry artwork. Lighting uses warm directional sunlight, cached soft shadows, cool sky and bounce fill, filmic exposure and atmospheric fog. Shadowing and lighting approximate the recording's appearance; its Minecraft shader pack is not being run in the browser.
 
-## Learn More
+The reconstruction includes connected Uris wings, Olin's horizontal windows, Sage Chapel's red gables and rose window, Sage Hall's campanile and corner towers, Willard Straight's courtyard and battlements, distinct Old Stone Row buildings, and the Arts Quad's paths. It uses planted beds, trees with irregular canopies, flowers, grass, benches, lamps, road markings and foundations extending down the western slope. It remains a visual interpretation, not an exact copy of CornellCraft. `npm test` checks the exterior mesher, an actual rendered-campus pixel sample, camera motion, reduced motion and the menu flows.
 
-To learn more about Next.js, take a look at the following resources:
+The expanded outskirts are an approximate campus backdrop, with simplified neighborhood buildings, trees and street tiles extending beyond the named campus models. Sunset haze begins at 350 world units and reaches full opacity at 1050, keeping the central campus clear while softening the distant city. Outer terrain uses deep solid columns to prevent gaps on the western slope. Fine façade materials use directional shading and cast shadows onto terrain, with shadow reception disabled on their small ledges to prevent self-shadow shimmer. The background renders at display resolution and up to 30 frames per second; the HTML menu remains at native display resolution.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+All interface text uses the locally served Minecraft font. WebGL is required for the panorama; the page remains usable with a solid fallback background. Build reports a bundle-size advisory for Three.js. Tour frame previews in `reference/` are local inspection artifacts. The original recording remains untouched on the Desktop.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Button refinement: classic 200×20 logical-pixel proportions at 2× scale, locally served MinecraftDefault-Regular font from https://github.com/tryashtar/minecraft-ttf/releases/tag/v1.6, and an original SVG stone-noise texture. Font glyphs originate from Minecraft; this remains an unofficial fan-inspired portfolio.
