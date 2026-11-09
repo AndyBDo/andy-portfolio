@@ -519,11 +519,11 @@ body:has(.home) footer{font-size:2.6vw}
 
 .home .menu:has(.admin-entry)>button:not([data-action="contact"]){grid-column:1/-1;margin-top:0}
 /* Persistent audio controls, using the supplied pixel icons. */
-.audio-controls{position:fixed;left:16px;top:16px;z-index:10;display:flex;gap:8px}
+.audio-controls{position:fixed;right:16px;top:16px;z-index:10;display:flex;gap:8px}
 .audio-controls>button{position:relative;width:44px;height:44px;min-height:44px;padding:6px}
 .audio-controls .audio-icon{display:block;width:28px;height:28px;object-fit:contain;image-rendering:pixelated;flex:none}
 .audio-controls .audio-off{position:absolute;inset:7px;width:26px;height:26px;filter:drop-shadow(1px 1px #111)}
 .audio-controls [aria-pressed="true"] .audio-off{display:none}
 .audio-controls [aria-pressed="false"] .audio-icon{opacity:.45}
-.admin-screen>header{padding-left:132px}
-@media(max-width:600px){.audio-controls{left:12px;top:12px;gap:6px}.audio-controls>button{width:40px;height:40px;min-height:40px;padding:4px}.audio-controls .audio-off{inset:5px}.admin-screen>header{padding-left:116px}.world-screen.screen>header{padding-top:64px}}
+.admin-screen>header{padding-right:132px}
+@media(max-width:600px){.audio-controls{right:12px;top:12px;gap:6px}.audio-controls>button{width:40px;height:40px;min-height:40px;padding:4px}.audio-controls .audio-off{inset:5px}.admin-screen>header{padding-right:116px}.world-screen.screen>header{padding-top:64px}}
