@@ -8,7 +8,7 @@ import {campusSky} from './campus-sky';
 export function panorama() {
   let renderer;
   const canvas=document.querySelector('#panorama');
-  try {renderer=new T.WebGLRenderer({canvas,antialias:true});} catch {return;}
+  try {renderer=new T.WebGLRenderer({canvas,antialias:true});} catch {canvas.dataset.textures='failed';return;}
   // The blurred backdrop renders at display resolution; menu text stays native.
   renderer.setPixelRatio(1);
   renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;
@@ -21,11 +21,12 @@ export function panorama() {
   // Keep façade ledges clear of their own shadow-map samples at grazing angles.
   sun.shadow.normalBias=.4;sun.shadow.bias=-.0007;sun.shadow.radius=2.5;scene.add(sun,sun.target);
   const bounce=new T.DirectionalLight('#a9b6e2',.45);bounce.position.set(120,70,100);scene.add(bounce);
+  let loadedTextures=0;
   const loads=[],failed=[],loader=new T.TextureLoader(),maps=new Map();
   function material(name,tint='#ffffff',cutout=false) {
     let map=maps.get(name);
     if(!map){
-      let resolve;loads.push(new Promise(done=>{resolve=done;}));
+      let resolve;loads.push(new Promise(done=>{resolve=()=>{loadedTextures++;canvas.dataset.progress=String(loadedTextures/loads.length);done();};}));
       map=loader.load(`/minecraft/assets/minecraft/textures/block/${name}.png`,resolve,undefined,()=>{failed.push(name);resolve();});
       map.colorSpace=T.SRGBColorSpace;map.magFilter=T.NearestFilter;map.minFilter=T.LinearMipmapLinearFilter;
       map.wrapS=map.wrapT=T.RepeatWrapping;map.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());maps.set(name,map);

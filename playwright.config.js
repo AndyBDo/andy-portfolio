@@ -1,2 +1,3 @@
 import {defineConfig} from '@playwright/test';
-export default defineConfig({testMatch:'**/*.spec.js',timeout:90000,use:{channel:'chrome'},webServer:{command:'npm run dev',url:'http://localhost:5173',reuseExistingServer:true}});
+const port=5180;
+export default defineConfig({testMatch:'**/*.spec.js',timeout:90000,use:{channel:'chrome',baseURL:`http://localhost:${port}`},webServer:{command:`npm run dev -- --port ${port} --strictPort`,url:`http://localhost:${port}`,reuseExistingServer:!process.env.CI}});

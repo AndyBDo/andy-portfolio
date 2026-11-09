@@ -1,9 +1,9 @@
 import {experience, projects} from './data';
-import fiservLogo from './assets/fiserv-logo.png';
-import cdsLogo from './assets/cds-logo-updated.png';
-import iu13Logo from './assets/iu13-logo.png';
-import projectIcons from './assets/project-icons.png';
-import safestepMap from './assets/safestep-map.png';
+import fiservLogo from './assets/fiserv-logo.webp';
+import cdsLogo from './assets/cds-logo-updated.webp';
+import iu13Logo from './assets/iu13-logo.webp';
+import projectIcons from './assets/project-icons.webp';
+import safestepMap from './assets/safestep-map.webp';
 const logos = {Fiserv:fiservLogo,'Cornell Data Science':cdsLogo,'Lancaster Lebanon IU13':iu13Logo,SafeStep:safestepMap};
 const iconViews={Loci:'30 20 590 550',CodeLens:'615 60 470 510',Alloc:'1110 65 410 520',PokerCaml:'330 580 370 440',Lambda:'755 575 455 449'};
 function thumbnail(item){

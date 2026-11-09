@@ -63,7 +63,6 @@ function texture(w,h,kind,face){
   const map=new THREE.CanvasTexture(canvas);map.magFilter=THREE.NearestFilter;map.minFilter=THREE.NearestFilter;map.colorSpace=THREE.SRGBColorSpace;
   return new THREE.MeshLambertMaterial({map});
 }
-export function playerMarkup(wardrobe=false){return `<aside class="player-preview${wardrobe?' player-large':''}" aria-label="Andy Do Minecraft player"><div class="player-nametag">Andy_Do</div><div class="player-stage" tabindex="0" role="img" aria-label="Minecraft skin of Andy Do. Drag left or right to rotate, or use arrow keys."></div>${wardrobe?`<div class="outfit-controls"><button type="button" data-outfit-step="-1" aria-label="Previous outfit"><svg viewBox="0 0 7 11" aria-hidden="true"><path d="M5 0H7V2H5V4H3V7H5V9H7V11H5V9H3V7H1V4H3V2H5Z" fill="currentColor"/></svg></button><button type="button" data-outfit-step="1" aria-label="Next outfit"><svg viewBox="0 0 7 11" aria-hidden="true"><path d="M0 0H2V2H4V4H6V7H4V9H2V11H0V9H2V7H4V4H2V2H0Z" fill="currentColor"/></svg></button></div><p class="outfit-name" aria-live="polite">${outfits[outfitIndex].name}</p><button data-action="home">Done</button>`:'<button class="wardrobe-button" data-action="wardrobe" aria-label="Wardrobe"><svg viewBox="0 0 20 16" aria-hidden="true"><path d="M8 1h4v1h1v3h-2V3H9v2h1v2h2v1h2v1h2v1h2v1h1v3H1v-3h1v-1h2V9h2V8h2V7h1V5H8Z" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button>'}</aside>`;}
 export function mountPlayer(host){
   if(!host)return()=>{};
   const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-13,13,19,-19,.1,200);
@@ -82,6 +81,8 @@ export function mountPlayer(host){
   part(8,12,4,0,18,'shirt');
   const left=part(4,12,4,-6,18,'arm'),right=part(4,12,4,6,18,'arm');left.rotation.z=-.035;right.rotation.z=.035;
   part(4,12,4,-2,6,'pants');part(4,12,4,2,6,'pants');
+  const outfitName=host.parentElement.querySelector('.outfit-name');
+  if(outfitName)outfitName.textContent=outfits[outfitIndex].name;
   const outfitButtons=[...host.parentElement.querySelectorAll('[data-outfit-step]')];
   const changeOutfit=e=>{
     outfitIndex=(outfitIndex+Number(e.currentTarget.dataset.outfitStep)+outfits.length)%outfits.length;
@@ -110,7 +111,7 @@ export function mountPlayer(host){
     draw();
   };
   window.addEventListener('pointermove',follow);
-  function draw(){renderer.render(scene,camera);host.dataset.rotation=player.rotation.y.toFixed(3);host.dataset.pitch=player.rotation.x.toFixed(3);host.dataset.headYaw=head.rotation.y.toFixed(3);}
+  function draw(){renderer.render(scene,camera);host.classList.add('player-ready');host.dataset.rotation=player.rotation.y.toFixed(3);host.dataset.pitch=player.rotation.x.toFixed(3);host.dataset.headYaw=head.rotation.y.toFixed(3);}
 
   const resize=new ResizeObserver(()=>{const {width,height}=host.getBoundingClientRect();if(!width||!height)return;const aspect=width/height;const halfHeight=Math.max(19,10.5/aspect);camera.top=halfHeight;camera.bottom=-halfHeight;camera.left=-halfHeight*aspect;camera.right=halfHeight*aspect;camera.updateProjectionMatrix();renderer.setSize(width,height,false);
     const tag=host.parentElement.querySelector('.player-nametag');
@@ -119,5 +120,5 @@ export function mountPlayer(host){
     tag.style.fontSize=`${Math.max(14,Math.min(30,headPixels*.42))}px`;
     tag.style.top=`${host.offsetTop+(1-top.y)*height/2-tag.offsetHeight-10}px`;
     draw();});resize.observe(host);draw();
-  return()=>{outfitButtons.forEach(button=>button.removeEventListener('click',changeOutfit));window.removeEventListener('pointermove',follow);resize.disconnect();renderer.dispose();parts.forEach(mesh=>{mesh.geometry.dispose();for(const material of Array.isArray(mesh.material)?mesh.material:[mesh.material]){material.map?.dispose();material.dispose();}});host.removeEventListener('pointerdown',down);host.removeEventListener('pointermove',move);host.removeEventListener('pointerup',up);host.removeEventListener('pointercancel',up);host.removeEventListener('lostpointercapture',up);host.removeEventListener('keydown',key);};
+  return()=>{outfitButtons.forEach(button=>button.removeEventListener('click',changeOutfit));window.removeEventListener('pointermove',follow);resize.disconnect();renderer.dispose();renderer.domElement.remove();parts.forEach(mesh=>{mesh.geometry.dispose();for(const material of Array.isArray(mesh.material)?mesh.material:[mesh.material]){material.map?.dispose();material.dispose();}});host.removeEventListener('pointerdown',down);host.removeEventListener('pointermove',move);host.removeEventListener('pointerup',up);host.removeEventListener('pointercancel',up);host.removeEventListener('lostpointercapture',up);host.removeEventListener('keydown',key);};
 }

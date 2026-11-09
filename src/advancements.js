@@ -1,9 +1,19 @@
-import iconSheet from './assets/skill-icons.png';
-import springLeaf from './assets/spring-leaf.png';
-import devopsSheet from './assets/devops-icons.png';
-import pythonFrameworkSheet from './assets/python-framework-icons.png';
+import iconSheet from './assets/skill-icons.webp';
+import springLeaf from './assets/spring-leaf.webp';
+import devopsSheet from './assets/devops-icons.webp';
+import pythonFrameworkSheet from './assets/python-framework-icons.webp';
 
 const groups=[['Docker',['Kubernetes','Helm','Argo CD','AWS']],['Java',['Spring','Spring Boot']],['JavaScript',['Node.js','Next.js','React','TanStack','TypeScript']],['Python',['Flask','FastAPI']],['C',[]],['C#',['ASP.NET Core']],['SQL',['Prisma','JPA','SQLAlchemy']],['HTML',[]],['CSS',['Bootstrap','Tailwind CSS']],['OCaml',[]],['Machine Learning',['Pandas','NumPy','Matplotlib','Scikit-learn']]];
+const usedIn={
+  Docker:'Fiserv',Kubernetes:'Fiserv',Helm:'Fiserv','Argo CD':'Fiserv',AWS:'Fiserv',
+  Java:'Fiserv',Spring:'Fiserv','Spring Boot':'Fiserv',
+  JavaScript:'IU13','Node.js':'Personal projects','Next.js':'Personal projects',React:'Personal projects',TanStack:'Personal projects',TypeScript:'Personal projects',
+  Python:'Cornell Data Science',Flask:'Personal projects',FastAPI:'Personal projects',
+  C:'CS3410','C#':'IU13','ASP.NET Core':'IU13',
+  SQL:'Fiserv',Prisma:'Personal projects',JPA:'Fiserv',SQLAlchemy:'Personal projects',
+  HTML:'IU13',CSS:'IU13',Bootstrap:'IU13','Tailwind CSS':'Personal projects',
+  OCaml:'CS3110','Machine Learning':'CS3780',Pandas:'Cornell Data Science',NumPy:'Cornell Data Science',Matplotlib:'Cornell Data Science','Scikit-learn':'Cornell Data Science',
+};
 const icons={
   Java:[28,165,145,185],Python:[185,179,151,161],'C#':[347,179,136,160],C:[494,179,136,160],JavaScript:[636,178,144,163],TypeScript:[786,179,134,162],SQL:[931,181,133,159],HTML:[1074,180,132,161],CSS:[1217,180,126,160],OCaml:[1356,202,151,136],
   React:[27,418,157,150],'Node.js':[187,418,157,148],'Next.js':[350,421,124,141],TanStack:[491,422,136,141],JPA:[642,421,136,151],Spring:[790,419,136,147],'Spring Boot':[936,421,141,143],Bootstrap:[1090,428,131,132],'ASP.NET Core':[1378,426,144,136],
@@ -27,7 +37,7 @@ export function advancements(){
       paths.push(`M${i?320+(i-1)*88+36:210} ${y+18} H${x}`);
     });
   });
-  return `<section class="advancement-screen"><div class="advancement-shell"><div class="advancement-tabs"><button class="advancement-tab active" aria-label="Technical Skills">${icon('Technical Skills')}</button></div><div class="advancement-window"><header class="advancement-title"><h1>Advancements</h1></header><div class="advancement-canvas-frame"><div class="advancement-viewport" aria-label="Skills advancement tree"><div class="advancement-fit"><div class="advancement-tree"><svg class="advancement-lines" width="760" height="${treeHeight}" aria-hidden="true"><path class="line-shadow" d="${paths.join(' ')}"/><path class="line-light" d="${paths.join(' ')}"/></svg>${nodes.map(n=>`<button class="skill-node" style="left:${n.x}px;top:${n.y}px" aria-label="${n.name}" data-skill="${n.name}"><span class="skill-icon${['ASP.NET Core','JPA'].includes(n.name)?' skill-icon-offset':''}">${icon(n.name)}</span><span class="skill-caption">${n.name}</span></button>`).join('')}</div></div></div></div><nav class="advancement-footer"><button data-action="home">Done</button></nav><div class="compact-skill-tooltip" role="tooltip" hidden></div></div></div></section>`;
+  return `<section class="advancement-screen"><div class="advancement-shell"><div class="advancement-tabs"><button class="advancement-tab active" aria-label="Technical Skills">${icon('Technical Skills')}</button></div><div class="advancement-window"><header class="advancement-title"><h1>Advancements</h1></header><div class="advancement-canvas-frame"><div class="advancement-viewport" aria-label="Skills advancement tree"><div class="advancement-fit"><div class="advancement-tree"><svg class="advancement-lines" width="760" height="${treeHeight}" aria-hidden="true"><path class="line-shadow" d="${paths.join(' ')}"/><path class="line-light" d="${paths.join(' ')}"/></svg>${nodes.map(n=>`<button class="skill-node" style="left:${n.x}px;top:${n.y}px" aria-label="${n.name}" aria-describedby="skill-tooltip" data-skill="${n.name}"><span class="skill-icon${['ASP.NET Core','JPA'].includes(n.name)?' skill-icon-offset':''}">${icon(n.name)}</span><span class="skill-caption">${n.name}</span></button>`).join('')}</div></div></div></div><nav class="advancement-footer"><button data-action="home">Done</button></nav><div id="skill-tooltip" class="compact-skill-tooltip" role="tooltip" hidden></div></div></div></section>`;
 }
 
 export function mountAdvancements(app){
@@ -59,11 +69,16 @@ export function mountAdvancements(app){
   viewport.addEventListener('pointerup',endDrag);
   viewport.addEventListener('pointercancel',endDrag);
   viewport.addEventListener('lostpointercapture',endDrag);
-  viewport.addEventListener('scroll',()=>tip.hidden=true);
+  viewport.addEventListener('scroll',()=>{
+    const node=viewport.querySelector('[data-skill]:hover, [data-skill]:focus');
+    if(node&&!drag?.moved)show({target:node});else tip.hidden=true;
+  });
   const show=event=>{
     if(drag?.moved)return;
     const node=event.target.closest('[data-skill]');if(!node){tip.hidden=true;return;}
-    tip.textContent=node.dataset.skill;tip.hidden=false;
+    const skill=node.dataset.skill;
+    if(!usedIn[skill]){tip.hidden=true;return;}
+    tip.textContent=`Used in: ${usedIn[skill]}`;tip.hidden=false;
     const panel=app.querySelector('.advancement-window');
     const rect=node.getBoundingClientRect(),bounds=panel.getBoundingClientRect();
     const left=rect.left-bounds.left-panel.clientLeft+(rect.width-tip.offsetWidth)/2;
