@@ -490,7 +490,6 @@ body:has(.home) footer{font-size:2.6vw}
 .loading-name img{width:.95em;height:.95em;object-fit:contain;flex:none}
 .home .menu>button{grid-column:1/-1;margin-top:0}
 .home .menu>button[data-action="contact"],.home .menu>.resume-link{grid-column:auto;margin-top:calc(6 * var(--home-unit))}
-.home .menu:has(.admin-entry){top:36svh}
 .admin-screen{background:#131710e8}
 .admin-screen>header{padding:28px 24px 20px;background:#171b16;border-bottom:2px solid #42473e;text-align:left}
 .admin-eyebrow{font-size:11px;letter-spacing:2px;color:#a4b391;margin:0 0 12px}
@@ -517,7 +516,7 @@ body:has(.home) footer{font-size:2.6vw}
 .admin-screen button:disabled{opacity:.45;cursor:default}
 @media(max-width:600px){.admin-screen h1{font-size:23px}.admin-toolbar{align-items:flex-start;flex-direction:column}.admin-summary>span{font-size:16px}.admin-summary>strong{font-size:32px}.admin-history td,.admin-history th{padding:12px;font-size:12px}}
 
-.home .menu:has(.admin-entry)>button:not([data-action="contact"]){grid-column:1/-1;margin-top:0}
+.home .admin-entry{position:fixed;left:16px;top:16px;z-index:11;width:72px;height:30px;min-height:0;padding:2px 6px;font-size:14px;line-height:1}
 /* Persistent audio controls, using the supplied pixel icons. */
 .audio-controls{position:fixed;right:16px;top:16px;z-index:10;display:flex;gap:8px}
 .audio-controls>button{position:relative;width:44px;height:44px;min-height:44px;padding:6px}
@@ -526,4 +525,4 @@ body:has(.home) footer{font-size:2.6vw}
 .audio-controls [aria-pressed="true"] .audio-off{display:none}
 .audio-controls [aria-pressed="false"] .audio-icon{opacity:.45}
 .admin-screen>header{padding-right:132px}
-@media(max-width:600px){.audio-controls{right:12px;top:12px;gap:6px}.audio-controls>button{width:40px;height:40px;min-height:40px;padding:4px}.audio-controls .audio-off{inset:5px}.admin-screen>header{padding-right:116px}.world-screen.screen>header{padding-top:64px}}
+@media(max-width:600px){.audio-controls{right:12px;top:12px;gap:6px}.audio-controls>button{width:40px;height:40px;min-height:40px;padding:4px}.audio-controls .audio-off{inset:5px}.home .admin-entry{left:12px;top:12px;width:64px;height:26px;font-size:12px}.admin-screen>header{padding-right:116px}.world-screen.screen>header{padding-top:64px}}

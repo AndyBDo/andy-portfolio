@@ -24,7 +24,7 @@ const notes={
 };
 export function experienceBook(app,index,page='work'){
   const entries=page==='projects'?projects:experience;
-  const item=entries[index];if(!item){location.hash=page;return;}
+  const item=entries[index];if(!item){app.dispatchEvent(new CustomEvent('app-navigate',{detail:page}));return;}
   app.innerHTML=`<section class="experience-book-screen" aria-label="${page==='projects'?'Project':'Experience'} book"><div class="experience-book"><div class="book-paper"><div class="book-page-number">Page ${index+1} of ${entries.length}</div><h1 tabindex="-1">${item.title}</h1><p class="book-role">${page==='projects'?item.date:item.role}</p><ul>${notes[item.title].map(note=>`<li>${note}</li>`).join('')}</ul></div><nav class="book-navigation" aria-label="Book pages">${index>0?`<button class="book-page-arrow previous" aria-label="Previous ${page==='projects'?'project':'experience'}" data-action="${page}/${index-1}"></button>`:''}${index<entries.length-1?`<button class="book-page-arrow next" aria-label="Next ${page==='projects'?'project':'experience'}" data-action="${page}/${index+1}"></button>`:''}</nav></div><button class="book-done" data-action="${page}">Done</button></section>`;
   app.querySelector('h1').focus({preventScroll:true});
 }

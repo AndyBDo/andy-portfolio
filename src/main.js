@@ -7,6 +7,8 @@ import {randomSplash} from './splashes';
 import './style.css';
 import logoUrl from './assets/logo-portfolio.webp';
 const app=document.querySelector('#app');const loading=startLoading(app);let adminEnabled=false;let selected=0,disposePlayer=()=>{};const splash=randomSplash();
+let route=history.state?.portfolioRoute||location.hash.slice(1)||'home';
+if(location.hash)history.replaceState({portfolioRoute:route},'',location.pathname+location.search);
 const button=(text,action)=>action==='resume'?`<a class="button resume-link" href="/Andy_Do_Resume.pdf" target="_blank" rel="noopener" aria-label="Resume (opens in a new tab)">${text}<svg class="contact-arrow" viewBox="0 0 9 9" aria-hidden="true"><path d="M2 0H9V7H7V3H6V4H5V5H4V6H3V7H2V6H1V5H2V4H3V3H4V2H2Z" fill="currentColor"/></svg></a>`:`<button data-action="${action}">${text}</button>`;const links=`<a class="button" href="mailto:doandyb@gmail.com">Email</a><a class="button" href="https://www.linkedin.com/in/andybdo/" target="_blank" rel="noopener">LinkedIn ↗</a><a class="button" href="https://github.com/AndyBDo" target="_blank" rel="noopener">GitHub ↗</a>`;
 function fitHomeSplash(){
   const label=app.querySelector('.splash');if(!label)return;
@@ -48,7 +50,11 @@ function fitHomeSplash(){
   app.querySelector('.brand img').addEventListener('load',fit,{once:true});
 }
 addEventListener('resize',fitHomeSplash);
-function go(route){location.hash=route==='home'?'':route;}
+function go(nextRoute){
+  route=nextRoute||'home';
+  history.pushState({portfolioRoute:route},'',location.pathname+location.search);
+  render();
+}
 function mountPlayer(host){
   let cancelled=false,dispose=()=>{};
   // Paint the WebP preview and menu before downloading or creating a WebGL context.
@@ -71,13 +77,13 @@ const routes={
 };
 app.addEventListener('pointerover',event=>routes[event.target.closest('[data-action]')?.dataset.action]?.());
 app.addEventListener('focusin',event=>routes[event.target.closest('[data-action]')?.dataset.action]?.());
-async function render(){disposePlayer();disposePlayer=()=>{};const [page='home',id]=location.hash.slice(1).split('/');const home=page==='home'||!page;if(home&&(location.hash||location.href.endsWith('#')))history.replaceState(null,'',location.pathname+location.search);document.body.classList.toggle('secondary',!home);
-if(home){app.innerHTML=`<section class="home"><div class="brand"><img src="${logoUrl}" alt="Andy Do — Portfolio Edition"><span class="splash">${splash}</span></div><nav class="menu" aria-label="Main menu">${adminEnabled?'<button class="admin-entry" data-action="admin">Admin</button>':''}${['About Me','Work Experience','Projects','Advancements','Contact','Resume'].map((s,i)=>button(s,['about','work','projects','advancements','contact','resume'][i])).join('')}</nav>${playerMarkup()}</section><footer><span>Andy Do 1.0</span><span>Copyright Andy Do. Please DO distribute!</span></footer>`;fitHomeSplash();disposePlayer=mountPlayer(app.querySelector('.player-stage'));return;}
+async function render(){disposePlayer();disposePlayer=()=>{};const currentRoute=route;const [page='home',id]=currentRoute.split('/');const home=page==='home'||!page;document.body.classList.toggle('secondary',!home);
+if(home){app.innerHTML=`<section class="home">${adminEnabled?'<button class="admin-entry" data-action="admin">Admin</button>':''}<div class="brand"><img src="${logoUrl}" alt="Andy Do — Portfolio Edition"><span class="splash">${splash}</span></div><nav class="menu" aria-label="Main menu">${['About Me','Work Experience','Projects','Advancements','Contact','Resume'].map((s,i)=>button(s,['about','work','projects','advancements','contact','resume'][i])).join('')}</nav>${playerMarkup()}</section><footer><span>Andy Do 1.0</span><span>Copyright Andy Do. Please DO distribute!</span></footer>`;fitHomeSplash();disposePlayer=mountPlayer(app.querySelector('.player-stage'));return;}
 if(page==='wardrobe'){app.innerHTML=`<section class="wardrobe-screen"><h1>Wardrobe</h1><p class="wardrobe-subtitle">(my favorite fits!)</p>${playerMarkup(true)}</section>`;disposePlayer=mountPlayer(app.querySelector('.player-stage'));return;}
-if(page==='admin'){const {mountAdmin}=await import('./admin');if(location.hash==='#admin')await mountAdmin(app);return;}
+if(page==='admin'){const {mountAdmin}=await import('./admin');if(route===currentRoute)await mountAdmin(app);return;}
 let title='',body='',actions='';
-if((page==='work'||page==='projects')&&id===undefined){const {worldMenu}=await import('./world-menu');if(location.hash.slice(1)!==page)return;worldMenu(app,page);return;}
-if((page==='work'||page==='projects')&&id!==undefined){const {experienceBook}=await import('./experience-book');if(location.hash.slice(1)!==`${page}/${id}`)return;experienceBook(app,Number(id),page);return;}
+if((page==='work'||page==='projects')&&id===undefined){const {worldMenu}=await import('./world-menu');if(route!==currentRoute)return;worldMenu(app,page);return;}
+if((page==='work'||page==='projects')&&id!==undefined){const {experienceBook}=await import('./experience-book');if(route!==currentRoute)return;experienceBook(app,Number(id),page);return;}
 else if(page==='about'){
   app.innerHTML=`<section class="wardrobe-screen about-wardrobe" aria-label="About Me"><header class="about-heading"><h1>About Me</h1><p>A little about the player.</p></header><div class="about-layout">${playerMarkup().replace('class="player-preview"','class="player-preview player-large"').replace('</aside>','<span class="wardrobe-callout" aria-hidden="true"><svg viewBox="0 0 28 12"><path d="M27 6H2M8 1L2 6L8 11"/></svg><span>Explore my fits!</span></span></aside>')}<article class="about-bio"><p class="bio-eyebrow">CORNELL UNIVERSITY · CLASS OF 2028</p><h2>Hi, I'm Andy Do.</h2><p>I'm a Computer Science student at Cornell University graduating in May 2028. If it wasn't obvious, I enjoy Minecraft. I also like playing ROBLOX horror games.</p><p>But don't worry, staying inside isn't my only hobby. I like playing pickleball with the boys, tennis, ping pong, lowkey just any racket sport.</p><p>I also love anime (JJK fan), played clarinet and competed in all states, and I love eating (shrimp tempura sushi is the best).</p><p class="bio-postscript">I also bench 225 by the way (no flex)</p></article></div>${favoriteMusic()}</section><nav class="about-done" aria-label="About Me navigation">${button('Done','home')}</nav>`;
   disposePlayer=mountPlayer(app.querySelector('.player-stage'));
@@ -88,19 +94,20 @@ else if(page==='contact'){
   app.innerHTML=`<section class="contact-screen"><h1 tabindex="-1">Contact</h1><nav class="contact-menu" aria-label="Contact links"><a class="button" href="mailto:doandyb@gmail.com">doandyb@gmail.com</a><a class="button" href="https://www.linkedin.com/in/andybdo/" target="_blank" rel="noopener">LinkedIn ${arrow}</a><a class="button" href="https://github.com/AndyBDo" target="_blank" rel="noopener">GitHub ${arrow}</a><a class="button" href="tel:+17178082649">(717) 808-2649</a></nav><nav class="contact-done">${button('Done','home')}</nav></section>`;
   app.querySelector('h1').focus({preventScroll:true});return;
 }
-else if(page==='advancements'){const {mountAdvancements}=await import('./advancements');if(location.hash!=='#advancements')return;mountAdvancements(app);return;}
+else if(page==='advancements'){const {mountAdvancements}=await import('./advancements');if(route!==currentRoute)return;mountAdvancements(app);return;}
 
 else{go('home');return;}
 app.innerHTML=`<section class="screen"><header><h1>${title}</h1></header><div class="content">${body}</div><nav class="actions">${actions||button('Done','home')}</nav></section>`;app.querySelector('h1').tabIndex=-1;app.querySelector('h1').focus();}
-app.addEventListener('click',e=>{const el=e.target.closest('[data-action],[data-select],a');if(!el)return;if(el.dataset.select!==undefined){selected=Number(el.dataset.select);render();app.querySelectorAll('.world')[selected]?.focus();return;}const action=el.dataset.action;if(action==='print')window.print();else if(action)go(action);});
-app.addEventListener('dblclick',e=>{const el=e.target.closest('[data-select]');if(el)go(`${location.hash.slice(1).split('/')[0]}/${el.dataset.select}`);});
-addEventListener('keydown',e=>{if(e.key==='Escape'){const parts=location.hash.slice(1).split('/');go(parts.length>1?parts[0]:'home');}if(['ArrowDown','ArrowUp'].includes(e.key)){const controls=[...app.querySelectorAll('button,a.button')];const index=controls.indexOf(document.activeElement);e.preventDefault();controls[(index+(e.key==='ArrowDown'?1:-1)+controls.length)%controls.length]?.focus();}});addEventListener('hashchange',render);render().then(()=>loading.rendered());
+app.addEventListener('click',e=>{const el=e.target.closest('[data-route],[data-action],[data-select],a');if(!el)return;if(el.dataset.route){e.preventDefault();go(el.dataset.route);return;}if(el.dataset.select!==undefined){selected=Number(el.dataset.select);render();app.querySelectorAll('.world')[selected]?.focus();return;}const action=el.dataset.action;if(action==='print')window.print();else if(action)go(action);});
+app.addEventListener('app-navigate',e=>go(e.detail));
+app.addEventListener('dblclick',e=>{const el=e.target.closest('[data-select]');if(el)go(`${route.split('/')[0]}/${el.dataset.select}`);});
+addEventListener('keydown',e=>{if(e.key==='Escape'){const parts=route.split('/');go(parts.length>1?parts[0]:'home');}if(['ArrowDown','ArrowUp'].includes(e.key)){const controls=[...app.querySelectorAll('button,a.button')];const index=controls.indexOf(document.activeElement);e.preventDefault();controls[(index+(e.key==='ArrowDown'?1:-1)+controls.length)%controls.length]?.focus();}});addEventListener('popstate',e=>{route=e.state?.portfolioRoute||'home';render();});addEventListener('hashchange',()=>{route=location.hash.slice(1)||'home';history.replaceState({portfolioRoute:route},'',location.pathname+location.search);render();});render().then(()=>loading.rendered());
 
 initAnalytics(enabled=>{
   adminEnabled=enabled;
-  const menu=app.querySelector('.home .menu');
-  if(enabled&&menu&&!menu.querySelector('.admin-entry')){
-    const entry=document.createElement('button');entry.className='admin-entry';entry.dataset.action='admin';entry.textContent='Admin';menu.prepend(entry);
+  const home=app.querySelector('.home');
+  if(enabled&&home&&!home.querySelector('.admin-entry')){
+    const entry=document.createElement('button');entry.className='admin-entry';entry.dataset.action='admin';entry.textContent='Admin';home.prepend(entry);
   }
 });
 

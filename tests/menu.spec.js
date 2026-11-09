@@ -109,6 +109,7 @@ test('home uses the root URL and keeps back and forward navigation working',asyn
   await page.goto('/#home');
   await expect(page).toHaveURL('http://localhost:5180/');
   await page.getByRole('button',{name:'About Me',exact:true}).click();
+  await expect(page).toHaveURL('http://localhost:5180/');
   await page.getByRole('button',{name:'Done',exact:true}).click();
   await expect(page).toHaveURL('http://localhost:5180/');
   await expect(page.getByRole('button',{name:'About Me',exact:true})).toBeVisible();
@@ -117,4 +118,14 @@ test('home uses the root URL and keeps back and forward navigation working',asyn
   await page.goForward();
   await expect(page).toHaveURL('http://localhost:5180/');
   await expect(page.getByRole('button',{name:'About Me',exact:true})).toBeVisible();
+});
+
+test('section and detail navigation stay at the root URL',async({page})=>{
+  await page.goto('/');
+  await page.getByRole('button',{name:'Work Experience',exact:true}).click();
+  await expect(page).toHaveURL('http://localhost:5180/');
+  await page.getByRole('option').first().click();
+  await page.getByRole('link',{name:/Join Experience/}).click();
+  await expect(page.getByRole('heading',{name:'Fiserv'})).toBeVisible();
+  await expect(page).toHaveURL('http://localhost:5180/');
 });

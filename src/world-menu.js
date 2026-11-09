@@ -29,8 +29,10 @@ export function worldMenu(app, page) {
     list.querySelectorAll('.world').forEach(el=>{const active=Number(el.dataset.index)===i;el.classList.toggle('selected',active);el.setAttribute('aria-selected',String(active));});
     const url = data[i]?.url || destinations[data[i]?.title];
     if(i!==null&&page==='work'){
-      play.href=`#work/${i}`;play.removeAttribute('target');play.removeAttribute('rel');
+      play.href='/';play.dataset.route=`work/${i}`;play.removeAttribute('target');play.removeAttribute('rel');
     }else if(url){play.href=url;play.target='_blank';play.rel='noopener noreferrer';}else play.removeAttribute('href');
+    if(!(i!==null&&page==='work'))play.removeAttribute('data-route');
+    if(i!==null&&page==='projects')details.dataset.route=`projects/${i}`;else details.removeAttribute('data-route');
     play.setAttribute('aria-disabled',String(i===null||!play.hasAttribute('href')));details.disabled=i===null;
     app.querySelector('.destination-note').textContent=i!==null&&!url?'Repository link not provided yet.':'';
   }
@@ -43,11 +45,7 @@ export function worldMenu(app, page) {
   }
   list.addEventListener('click',e=>{const row=e.target.closest('[data-index]');if(row){select(Number(row.dataset.index));if(e.target.closest('.play-hit polygon')&&play.hasAttribute('href'))play.click();}});
   list.addEventListener('dblclick',e=>{if(e.target.closest('[data-index]')&&play.hasAttribute('href'))play.click();});
-  details.addEventListener('click',()=>{
-    if(selected===null)return;
-    if(page==='work')window.open(destinations[data[selected].title],'_blank','noopener,noreferrer');
-    else location.hash=`projects/${selected}`;
-  });
+  if(page==='work')details.addEventListener('click',()=>{if(selected!==null)window.open(destinations[data[selected].title],'_blank','noopener,noreferrer');});
   play.addEventListener('click',e=>{if(!play.hasAttribute('href'))e.preventDefault();});
   rows();
   app.querySelector('h1').tabIndex=-1;app.querySelector('h1').focus();
