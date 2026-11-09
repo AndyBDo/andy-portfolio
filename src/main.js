@@ -1,10 +1,11 @@
+import {initAnalytics} from './analytics';
 import {startLoading} from './loading';
 import {favoriteMusic} from './music';
 import {playerMarkup} from './player-ui';
 import {randomSplash} from './splashes';
 import './style.css';
 import logoUrl from './assets/logo-portfolio.webp';
-const app=document.querySelector('#app');const loading=startLoading(app);let selected=0,disposePlayer=()=>{};const splash=randomSplash();
+const app=document.querySelector('#app');const loading=startLoading(app);let adminEnabled=false;let selected=0,disposePlayer=()=>{};const splash=randomSplash();
 const button=(text,action)=>action==='resume'?`<a class="button resume-link" href="/Andy_Do_Resume.pdf" target="_blank" rel="noopener" aria-label="Resume (opens in a new tab)">${text}<svg class="contact-arrow" viewBox="0 0 9 9" aria-hidden="true"><path d="M2 0H9V7H7V3H6V4H5V5H4V6H3V7H2V6H1V5H2V4H3V3H4V2H2Z" fill="currentColor"/></svg></a>`:`<button data-action="${action}">${text}</button>`;const links=`<a class="button" href="mailto:doandyb@gmail.com">Email</a><a class="button" href="https://www.linkedin.com/in/andybdo/" target="_blank" rel="noopener">LinkedIn ↗</a><a class="button" href="https://github.com/AndyBDo" target="_blank" rel="noopener">GitHub ↗</a>`;
 function fitHomeSplash(){
   const label=app.querySelector('.splash');if(!label)return;
@@ -70,8 +71,9 @@ const routes={
 app.addEventListener('pointerover',event=>routes[event.target.closest('[data-action]')?.dataset.action]?.());
 app.addEventListener('focusin',event=>routes[event.target.closest('[data-action]')?.dataset.action]?.());
 async function render(){disposePlayer();disposePlayer=()=>{};const [page='home',id]=location.hash.slice(1).split('/');const home=page==='home'||!page;if(home&&(location.hash||location.href.endsWith('#')))history.replaceState(null,'',location.pathname+location.search);document.body.classList.toggle('secondary',!home);
-if(home){app.innerHTML=`<section class="home"><div class="brand"><img src="${logoUrl}" alt="Andy Do — Portfolio Edition"><span class="splash">${splash}</span></div><nav class="menu" aria-label="Main menu">${['About Me','Work Experience','Projects','Advancements','Contact','Resume'].map((s,i)=>button(s,['about','work','projects','advancements','contact','resume'][i])).join('')}</nav>${playerMarkup()}</section><footer><span>Andy Do 1.0</span><span>Copyright Andy Do. Please DO distribute!</span></footer>`;fitHomeSplash();disposePlayer=mountPlayer(app.querySelector('.player-stage'));return;}
+if(home){app.innerHTML=`<section class="home"><div class="brand"><img src="${logoUrl}" alt="Andy Do — Portfolio Edition"><span class="splash">${splash}</span></div><nav class="menu" aria-label="Main menu">${adminEnabled?'<button class="admin-entry" data-action="admin">Admin</button>':''}${['About Me','Work Experience','Projects','Advancements','Contact','Resume'].map((s,i)=>button(s,['about','work','projects','advancements','contact','resume'][i])).join('')}</nav>${playerMarkup()}</section><footer><span>Andy Do 1.0</span><span>Copyright Andy Do. Please DO distribute!</span></footer>`;fitHomeSplash();disposePlayer=mountPlayer(app.querySelector('.player-stage'));return;}
 if(page==='wardrobe'){app.innerHTML=`<section class="wardrobe-screen"><h1>Wardrobe</h1><p class="wardrobe-subtitle">(my favorite fits!)</p>${playerMarkup(true)}</section>`;disposePlayer=mountPlayer(app.querySelector('.player-stage'));return;}
+if(page==='admin'){const {mountAdmin}=await import('./admin');if(location.hash==='#admin')await mountAdmin(app);return;}
 let title='',body='',actions='';
 if((page==='work'||page==='projects')&&id===undefined){const {worldMenu}=await import('./world-menu');if(location.hash.slice(1)!==page)return;worldMenu(app,page);return;}
 if((page==='work'||page==='projects')&&id!==undefined){const {experienceBook}=await import('./experience-book');if(location.hash.slice(1)!==`${page}/${id}`)return;experienceBook(app,Number(id),page);return;}
@@ -99,3 +101,11 @@ app.addEventListener('click',event=>{
 app.addEventListener('click',e=>{const el=e.target.closest('[data-action],[data-select],a');if(!el)return;if(el.dataset.select!==undefined){selected=Number(el.dataset.select);render();app.querySelectorAll('.world')[selected]?.focus();return;}const action=el.dataset.action;if(action==='print')window.print();else if(action)go(action);});
 app.addEventListener('dblclick',e=>{const el=e.target.closest('[data-select]');if(el)go(`${location.hash.slice(1).split('/')[0]}/${el.dataset.select}`);});
 addEventListener('keydown',e=>{if(e.key==='Escape'){const parts=location.hash.slice(1).split('/');go(parts.length>1?parts[0]:'home');}if(['ArrowDown','ArrowUp'].includes(e.key)){const controls=[...app.querySelectorAll('button,a.button')];const index=controls.indexOf(document.activeElement);e.preventDefault();controls[(index+(e.key==='ArrowDown'?1:-1)+controls.length)%controls.length]?.focus();}});addEventListener('hashchange',render);render().then(()=>loading.rendered());
+
+initAnalytics(enabled=>{
+  adminEnabled=enabled;
+  const menu=app.querySelector('.home .menu');
+  if(enabled&&menu&&!menu.querySelector('.admin-entry')){
+    const entry=document.createElement('button');entry.className='admin-entry';entry.dataset.action='admin';entry.textContent='Admin';menu.prepend(entry);
+  }
+});

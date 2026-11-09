@@ -1,0 +1,23 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "personal-website",
+  "main": "server/worker.js",
+  "compatibility_date": "2026-11-09",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "vars": {
+    "ADMIN_EMAIL": "doa12967@gmail.com",
+    "ACCESS_TEAM_DOMAIN": "https://shy-rain-154a.cloudflareaccess.com",
+    "ACCESS_AUD": "ef7cdf92a06fa30ae3c1ba02d1943b5d01680207c5dc7e3051e6da0d5153deaa"
+  },
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "portfolio-visitors",
+    "database_id": "dd74dfca-6ee7-46c1-9030-bf517b943d4c",
+    "migrations_dir": "migrations"
+  }]
+}

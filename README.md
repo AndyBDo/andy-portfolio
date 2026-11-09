@@ -1,5 +1,7 @@
 # Andy Do — Portfolio Edition
 
+Live site: https://andybdo.com. Private visitor analytics, owner sign-in, database setup, and deployment instructions: [ADMIN_SETUP.md](ADMIN_SETUP.md).
+
 Run `npm install` and `npm run dev`. Production: `npm run build` (output: `dist`). Tests: `npm test` (uses installed Google Chrome).
 
 The supplied directory was empty. This is a new Vite/vanilla JavaScript site with Three.js for a genuinely rotating original voxel landscape.
@@ -14,7 +16,7 @@ The supplied directory was empty. This is a new Vite/vanilla JavaScript site wit
 - `src/assets/logo-portfolio.png`: transparent cleanup of the supplied Andy Do / Portfolio Edition logo.
 - `tests/menu.spec.js`: navigation and responsive smoke test.
 
-Missing source materials: original site/repository, terminal, original résumé PDF, project screenshots, and verified project-specific repository URLs. No accomplishments or repository URLs were invented. Resume currently opens a printable page; use the browser Save as PDF option. Replace this with the original PDF when provided. No site has been deployed.
+The Resume button opens `public/Andy_Do_Resume.pdf`. The site is deployed as the Cloudflare Worker `personal-website`, serving the Vite `dist` assets. The private admin dashboard uses a bound D1 database and server-verified Cloudflare Access sign-in.
 
 Campus reconstruction: `src/cornell.js` uses the supplied CornellCraft screen recording and Google Maps satellite references around McGraw Tower (42.4476, -76.4845) and the Arts Quad (42.4487, -76.4841). Uris, Olin, Stimson, Old Stone Row, Goldwin Smith, Sage Chapel, Day Hall, Willard Straight, Barnes, the Cornell Store and Sage Hall have distinct footprints and silhouettes. Paths and sloping westward terrain follow the reference layout. Dimensions, some distant buildings, and tree placement are approximate; this is not a world-file import or a survey-accurate model of the entire campus.
 

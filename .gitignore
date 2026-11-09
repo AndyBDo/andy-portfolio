@@ -6,3 +6,9 @@ desktop.png
 mobile.png
 reference/*.png
 world-check.png
+
+.DS_Store
+.wrangler/
+.dev.vars
+.env*
+!.env.example
