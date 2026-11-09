@@ -31,7 +31,7 @@ export function startLoading(app){
       fill.style.clipPath=clip;motion.cancel();
       fill.animate([{clipPath:clip},{clipPath:'inset(0 0% 0 0)'}],{duration:reduced?0:450,fill:'forwards'}).finished.then(()=>{
         screen.classList.add('loading-complete');
-        setTimeout(()=>{screen.remove();app.inert=false;},200);
+        setTimeout(()=>{screen.remove();app.inert=false;document.dispatchEvent(new Event('portfolio-ready'));},200);
       });
     }
   }

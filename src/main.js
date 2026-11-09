@@ -1,3 +1,4 @@
+import {initBackgroundMusic} from './background-music';
 import {initAnalytics} from './analytics';
 import {startLoading} from './loading';
 import {favoriteMusic} from './music';
@@ -91,13 +92,6 @@ else if(page==='advancements'){const {mountAdvancements}=await import('./advance
 
 else{go('home');return;}
 app.innerHTML=`<section class="screen"><header><h1>${title}</h1></header><div class="content">${body}</div><nav class="actions">${actions||button('Done','home')}</nav></section>`;app.querySelector('h1').tabIndex=-1;app.querySelector('h1').focus();}
-const clickSound=new Audio('/audio/minecraft-click.ogg');
-clickSound.preload='none';clickSound.volume=.3;
-app.addEventListener('click',event=>{
-  const control=event.target.closest('button,a.button');
-  if(!event.isTrusted||!control||control.disabled||control.getAttribute('aria-disabled')==='true')return;
-  clickSound.currentTime=0;clickSound.play().catch(()=>{});
-},true);
 app.addEventListener('click',e=>{const el=e.target.closest('[data-action],[data-select],a');if(!el)return;if(el.dataset.select!==undefined){selected=Number(el.dataset.select);render();app.querySelectorAll('.world')[selected]?.focus();return;}const action=el.dataset.action;if(action==='print')window.print();else if(action)go(action);});
 app.addEventListener('dblclick',e=>{const el=e.target.closest('[data-select]');if(el)go(`${location.hash.slice(1).split('/')[0]}/${el.dataset.select}`);});
 addEventListener('keydown',e=>{if(e.key==='Escape'){const parts=location.hash.slice(1).split('/');go(parts.length>1?parts[0]:'home');}if(['ArrowDown','ArrowUp'].includes(e.key)){const controls=[...app.querySelectorAll('button,a.button')];const index=controls.indexOf(document.activeElement);e.preventDefault();controls[(index+(e.key==='ArrowDown'?1:-1)+controls.length)%controls.length]?.focus();}});addEventListener('hashchange',render);render().then(()=>loading.rendered());
@@ -109,3 +103,5 @@ initAnalytics(enabled=>{
     const entry=document.createElement('button');entry.className='admin-entry';entry.dataset.action='admin';entry.textContent='Admin';menu.prepend(entry);
   }
 });
+
+initBackgroundMusic(app);
