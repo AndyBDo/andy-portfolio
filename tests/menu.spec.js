@@ -92,3 +92,14 @@ test('each skill shows its usage on hover and keyboard focus',async({page})=>{
   await expect(tooltip).toHaveText('Used in: Fiserv');
   await page.getByRole('heading',{name:'Advancements'}).focus();await expect(tooltip).toBeHidden();
 });
+
+
+test('saved outfit survives reload without a default-fit placeholder',async({page})=>{
+  await page.addInitScript(()=>localStorage.setItem('andy-outfit','3'));
+  await page.goto('/?saved-outfit-test=1#wardrobe');
+  await expect(page.locator('.outfit-name')).toHaveText('Cornell sweatshirt + black pants + white vans',{timeout:20000});
+  await expect(page.locator('.player-stage img')).toHaveCount(0);
+  await page.reload();
+  await expect(page.locator('.outfit-name')).toHaveText('Cornell sweatshirt + black pants + white vans',{timeout:20000});
+  await expect(page.locator('.player-stage img')).toHaveCount(0);
+});

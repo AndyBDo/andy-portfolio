@@ -1,11 +1,11 @@
 export const outfits=[
-  {name:'The Met tee + sweatpants',shirt:'#303033',pants:'#b7b8b9',jacket:false},
-  {name:'Museum graphic tee + black jeans',shirt:'#e3e2d8',pants:'#292b2b',jacket:false},
-  {name:'Butterfly zip-up + sweatpants',shirt:'#242424',pants:'#b7b8b9',jacket:true},
-  {name:'Cornell sweatshirt + black pants',shirt:'#d6cbb4',pants:'#292b2b',jacket:false},
-  {name:'Varsity jacket + white tee + light jeans',shirt:'#262429',pants:'#a9bec8',jacket:true},
-  {name:'Navy overshirt + white tee + dark jeans',shirt:'#202c36',pants:'#333b40',jacket:true},
-  {name:'Brown knit overshirt + white tee + light jeans',shirt:'#514a40',pants:'#a9bec8',jacket:true},
+  {name:'Black The met tee + sweatpants + birks',shirt:'#303033',pants:'#b7b8b9',shoes:'birks',jacket:false},
+  {name:'White The Met tee + black jeans + white vans',shirt:'#e3e2d8',pants:'#292b2b',shoes:'vans',jacket:false},
+  {name:'The Met Butterfly zip-up + sweatpants + birks',shirt:'#242424',pants:'#b7b8b9',shoes:'birks',jacket:true},
+  {name:'Cornell sweatshirt + black pants + white vans',shirt:'#d6cbb4',pants:'#292b2b',shoes:'vans',jacket:false},
+  {name:'Varsity jacket + white tee + blue jeans + white vans',shirt:'#262429',pants:'#a9bec8',shoes:'vans',jacket:true},
+  {name:'Navy overshirt + white tee + dark jeans + birks',shirt:'#202c36',pants:'#333b40',shoes:'birks',jacket:true},
+  {name:'Brown knit overshirt + white tee + light jeans + white vans',shirt:'#514a40',pants:'#a9bec8',shoes:'vans',jacket:true},
 ];
 function script(c,lines,y,color,size=8){c.fillStyle=color;c.textAlign='center';c.textBaseline='middle';c.font=`italic ${size}px "Snell Roundhand", "Brush Script MT", cursive`;lines.forEach((line,i)=>c.fillText(line,32,y+i*(size+3),55));}
 function butterfly(c,x,y,scale){
@@ -169,4 +169,20 @@ export function finishClothing(c){
     }
   }
   c.putImageData(image,0,0);
+}
+
+// Broad, deterministic pixel folds give fabric the stepped contrast of a skin.
+export function shadeFabric(c,kind,face){
+  const w=c.canvas.width,h=c.canvas.height;
+  c.save();
+  for(let y=0;y<h;y+=8)for(let x=0;x<w;x+=8){
+    const seed=(x/8*13+y/8*7+face*11)%17;
+    if(seed<3){c.fillStyle=seed===0?'#ffffff16':'#00000019';c.fillRect(x,y,8,8);}
+  }
+  if(kind!=='head'){
+    c.fillStyle='#00000024';c.fillRect(0,8,8,h-16);c.fillRect(w-8,8,8,h-16);
+    c.fillStyle='#ffffff12';c.fillRect(8,8,8,Math.max(8,h-24));
+    c.fillStyle='#00000024';c.fillRect(0,h-16,w,8);
+  }
+  c.restore();
 }

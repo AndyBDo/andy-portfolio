@@ -14,8 +14,7 @@ export function startLoading(app){
   observer.observe(document.querySelector('#panorama'),{attributes:true,attributeFilter:['data-textures','data-progress']});
   function fail(){
     finished=true;observer.disconnect();motion.pause();
-    screen.querySelector('h1').textContent='Unable to finish loading';
-    screen.querySelector('.loading-inset p').textContent='Something could not load. Please try again.';
+    screen.querySelector('.loading-error').hidden=false;
     screen.querySelector('.loading-retry').hidden=false;
   }
   function update(){
@@ -38,7 +37,7 @@ export function startLoading(app){
   }
   return{async rendered(){
     rendered=true;update();
-    const urls=[...app.querySelectorAll('img,svg image')].map(image=>image.getAttribute('src')||image.getAttribute('href'));
+    const urls=[...app.querySelectorAll('img,svg image'),...screen.querySelectorAll('img')].map(image=>image.getAttribute('src')||image.getAttribute('href'));
     urls.push('/campus-preview.webp');
     try{
       await Promise.all([...new Set(urls)].filter(Boolean).map(url=>{const image=new Image();image.src=url;return image.decode();}));

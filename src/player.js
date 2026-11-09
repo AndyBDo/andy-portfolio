@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {outfits,paintOutfit,finishClothing} from './outfits';
+import {outfits,paintOutfit,finishClothing,shadeFabric} from './outfits';
 let outfitIndex=0;
 try{outfitIndex=Number(localStorage.getItem('andy-outfit'))||0;}catch{}
 if(!outfits[outfitIndex])outfitIndex=0;
@@ -60,15 +60,16 @@ function texture(w,h,kind,face){
     c.fillStyle='#a67c50';c.fillRect(0,88,canvas.width,8);
   }
   if(kind!=='head'){paintOutfit(c,kind,face,outfitIndex);finishClothing(c);}
+  shadeFabric(c,kind,face);
   const map=new THREE.CanvasTexture(canvas);map.magFilter=THREE.NearestFilter;map.minFilter=THREE.NearestFilter;map.colorSpace=THREE.SRGBColorSpace;
   return new THREE.MeshLambertMaterial({map});
 }
 export function mountPlayer(host){
   if(!host)return()=>{};
   const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-13,13,19,-19,.1,200);
-  camera.position.set(30,23,65);camera.lookAt(0,16,0);
+  camera.position.set(34,26,65);camera.lookAt(0,16,0);
   const renderer=new THREE.WebGLRenderer({alpha:true,antialias:false});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setClearColor(0,0);host.append(renderer.domElement);
-  scene.add(new THREE.HemisphereLight(0xffffff,0x68717b,2.2));const sun=new THREE.DirectionalLight(0xfff3df,2);sun.position.set(-20,40,35);scene.add(sun);
+  scene.add(new THREE.HemisphereLight(0xffffff,0x606a7d,1.7));const sun=new THREE.DirectionalLight(0xfff3df,2.2);sun.position.set(-20,40,35);scene.add(sun);
   const player=new THREE.Group();player.rotation.y=-.15;scene.add(player);
   const parts=[];
   function part(w,h,d,x,y,kind){
@@ -78,21 +79,65 @@ export function mountPlayer(host){
   }
   const head=new THREE.Group();head.position.y=28;player.add(head);
   const headMesh=part(8,8,8,0,28,'head');headMesh.position.y=0;head.add(headMesh);
-  part(8,12,4,0,18,'shirt');
+  const torso=part(8,12,4,0,18,'shirt');
   const left=part(4,12,4,-6,18,'arm'),right=part(4,12,4,6,18,'arm');left.rotation.z=-.035;right.rotation.z=.035;
-  part(4,12,4,-2,6,'pants');part(4,12,4,2,6,'pants');
+  const legs=[part(4,12,4,-2,6,'pants'),part(4,12,4,2,6,'pants')];
+  legs[0].rotation.x=-.035;legs[1].rotation.x=.035;
+  const clothing=[];
+  function clearClothing(){
+    for(const mesh of clothing){mesh.removeFromParent();mesh.geometry.dispose();if(mesh.userData.ownMaterial)mesh.material.dispose();}
+    clothing.length=0;
+  }
+  function layer(parent,w,h,d,x,y,z,color){
+    const material=color?new THREE.MeshLambertMaterial({color}):parent.material;
+    const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);
+    mesh.userData.ownMaterial=Boolean(color);mesh.position.set(x,y,z);parent.add(mesh);clothing.push(mesh);return mesh;
+  }
+  function dress(){
+    clearClothing();
+    const fit=outfits[outfitIndex],jacket=fit.jacket;
+    layer(torso,8.5,12.2,4.5,0,0,0);
+    // Each sleeve occupies the matching portion of the arm texture, not a stretched full arm.
+    const sleeveHeight=[5,5,11.2,11.2,11.2,8.5,5.5][outfitIndex];
+    for(const arm of [left,right]){
+      // Offset sleeve fronts and caps from the torso and base arm surfaces.
+      const sleeve=layer(arm,4.5,sleeveHeight+.16,4.6,0,6.08-sleeveHeight/2,0);
+      const uv=sleeve.geometry.attributes.uv;
+      for(const face of [0,1,4,5])for(let i=face*4;i<face*4+4;i++)uv.setY(i,1-(1-uv.getY(i))*sleeveHeight/12);
+      uv.needsUpdate=true;
+      layer(arm,4.75,.8,4.8,0,6-sleeveHeight+.3,0,outfitIndex===4?'#d6cbb4':fit.shirt);
+    }
+    // Raised hems and shoe soles create a layered silhouette from every angle.
+    layer(torso,8.65,.8,4.65,0,-5.68,0,fit.shirt);
+    for(const leg of legs){
+      // Expand only outward: keep the legs touching, with distinct cuff, shoe, and sole side planes.
+      const side=Math.sign(leg.position.x);
+      layer(leg,4.08,.65,4.3,side*.04,-4.3,0,fit.pants);
+      layer(leg,4.16,1.25,4.65,side*.08,-5.38,.18,fit.shoes==='birks'?'#a67c50':'#f2f0e8');
+      layer(leg,4.24,.35,4.75,side*.12,-5.85,.18,fit.shoes==='birks'?'#534331':'#dcdad3');
+    }
+    if(jacket){
+      // Actual cuboid collar pieces sit above the shirt and cast directional shading.
+      for(const sign of [-1,1])layer(torso,2.1,1.25,.6,sign*2,5.5,2.5,fit.shirt);
+      if(outfitIndex===2)layer(torso,6,2.8,1.4,0,5.4,-2.6,'#18191b');
+      else for(const sign of [-1,1])layer(torso,1.8,2.8,.45,sign*1.6,4.2,2.5,fit.shirt);
+    }
+    host.dataset.clothingLayers=String(clothing.length);
+  }
+  dress();
   const outfitName=host.parentElement.querySelector('.outfit-name');
   if(outfitName)outfitName.textContent=outfits[outfitIndex].name;
   const outfitButtons=[...host.parentElement.querySelectorAll('[data-outfit-step]')];
   const changeOutfit=e=>{
     outfitIndex=(outfitIndex+Number(e.currentTarget.dataset.outfitStep)+outfits.length)%outfits.length;
     try{localStorage.setItem('andy-outfit',String(outfitIndex));}catch{}
+    clearClothing();
     parts.filter(mesh=>mesh.userData.kind!=='head').forEach(mesh=>{
       mesh.material.forEach(material=>{material.map.dispose();material.dispose();});
       const{w,h,d,kind}=mesh.userData;
       mesh.material=[[d,h],[d,h],[w,d],[w,d],[w,h],[w,h]].map(([fw,fh],i)=>texture(fw,fh,kind,i));
     });
-    host.parentElement.querySelector('.outfit-name').textContent=outfits[outfitIndex].name;draw();
+    dress();host.parentElement.querySelector('.outfit-name').textContent=outfits[outfitIndex].name;draw();
   };
   outfitButtons.forEach(button=>button.addEventListener('click',changeOutfit));
   let dragging=null;
@@ -120,5 +165,5 @@ export function mountPlayer(host){
     tag.style.fontSize=`${Math.max(14,Math.min(30,headPixels*.42))}px`;
     tag.style.top=`${host.offsetTop+(1-top.y)*height/2-tag.offsetHeight-10}px`;
     draw();});resize.observe(host);draw();
-  return()=>{outfitButtons.forEach(button=>button.removeEventListener('click',changeOutfit));window.removeEventListener('pointermove',follow);resize.disconnect();renderer.dispose();renderer.domElement.remove();parts.forEach(mesh=>{mesh.geometry.dispose();for(const material of Array.isArray(mesh.material)?mesh.material:[mesh.material]){material.map?.dispose();material.dispose();}});host.removeEventListener('pointerdown',down);host.removeEventListener('pointermove',move);host.removeEventListener('pointerup',up);host.removeEventListener('pointercancel',up);host.removeEventListener('lostpointercapture',up);host.removeEventListener('keydown',key);};
+  return()=>{outfitButtons.forEach(button=>button.removeEventListener('click',changeOutfit));window.removeEventListener('pointermove',follow);resize.disconnect();clearClothing();renderer.dispose();renderer.domElement.remove();parts.forEach(mesh=>{mesh.geometry.dispose();for(const material of Array.isArray(mesh.material)?mesh.material:[mesh.material]){material.map?.dispose();material.dispose();}});host.removeEventListener('pointerdown',down);host.removeEventListener('pointermove',move);host.removeEventListener('pointerup',up);host.removeEventListener('pointercancel',up);host.removeEventListener('lostpointercapture',up);host.removeEventListener('keydown',key);};
 }

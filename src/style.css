@@ -315,7 +315,7 @@ body:has(.home) footer{font-size:2.6vw}
 /* Interactive skin preview beside the title-screen menu. */
 .home .menu{width:calc(200 * var(--home-unit))}
 .player-preview{position:absolute;top:39svh;right:2vw;width:min(17vw,25svh);display:flex;flex-direction:column;align-items:center;color:#fff;text-align:center}
-.player-nametag{font-size:clamp(16px,1.8vw,30px);line-height:1.2;background:#0007;padding:4px 8px;text-shadow:2px 2px #333;white-space:nowrap}
+.player-nametag{font-size:clamp(16px,1.8vw,30px);line-height:1;background:#0007;padding:0 4px;text-shadow:2px 2px #333;white-space:nowrap}
 .player-stage{width:100%;height:39svh;cursor:grab;touch-action:none;outline-offset:3px}
 .player-stage.rotating{cursor:grabbing}
 .player-stage canvas{display:block;width:100%;height:100%;image-rendering:pixelated}
@@ -331,7 +331,7 @@ body:has(.home) footer{font-size:2.6vw}
 /* Keep desktop controls full-sized; narrow only when space is constrained. */
 .home .menu{width:calc(200 * var(--home-unit))}
 .player-preview{width:clamp(170px,18vw,300px);right:1.5vw}
-.player-nametag{position:absolute;left:50%;transform:translateX(-50%);z-index:1;padding:3px 5px;line-height:1.15;background:#0006;pointer-events:none}
+.player-nametag{position:absolute;left:50%;transform:translateX(-50%);z-index:1;padding:0 4px;line-height:1;background:#0006;pointer-events:none}
 .player-stage{margin-top:34px}
 .player-large .player-stage{margin-top:30px}
 @media(max-width:900px){.home .menu{width:58vw;left:4vw;transform:none}.player-preview{width:30vw;right:2vw}}
@@ -352,7 +352,7 @@ body:has(.home) footer{font-size:2.6vw}
   .home .menu{width:58vw;left:50%;transform:translateX(-50%)}
   .home .player-preview{width:19vw;right:.5vw;top:40svh}
   .home .player-stage{height:24svh;margin-top:24px}
-  .home .player-nametag{font-size:12px!important;padding:2px 3px}
+  .home .player-nametag{font-size:12px!important;padding:0 3px}
   .home .player-preview .wardrobe-button{width:30px;height:30px;min-height:30px;padding:4px}
   .home .wardrobe-button svg{width:20px;height:18px}
 }
@@ -388,8 +388,6 @@ body:has(.home) footer{font-size:2.6vw}
 /* Immediate backdrop while the rotating campus initializes. */
 #panorama{background:#7899ac url('/campus-preview.webp') center / cover no-repeat}
 .player-stage{position:relative}
-.player-placeholder{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;image-rendering:pixelated}
-.player-stage.player-ready .player-placeholder{display:none}
 /* A compact wardrobe beside the centered biography. */
 .wardrobe-screen.about-wardrobe{background:#000a;padding:clamp(22px,5vh,54px) 24px 24px;overflow:auto}
 .about-heading{text-align:center;flex:none}
@@ -443,7 +441,7 @@ body:has(.home) footer{font-size:2.6vw}
 .album-cover{display:block;width:100%;aspect-ratio:1;image-rendering:pixelated;filter:drop-shadow(4px 6px 0 #0007)}
 .music-card h3{font-size:18px;font-weight:normal;line-height:1.5;margin:18px 0 5px}
 .music-card p{font-size:14px;color:#bbb;margin:0;line-height:1.5}
-.about-wardrobe .about-done{padding:12px 0 8px}
+.about-done{padding:12px 0 8px}
 @media(max-width:760px){.about-wardrobe .about-layout{min-height:0}.favorite-music{padding:36px 0 44px}.favorite-music>h2{font-size:25px;margin-bottom:28px}.music-grid{gap:28px 20px}.music-card{width:calc((100% - 20px)/2)}.music-card h3{font-size:14px;margin-top:12px}.music-card p{font-size:12px}}
 /* Minecraft scrollbar: square gray thumb with an inset highlight and transparent track. */
 .about-wardrobe{scrollbar-width:thin;scrollbar-color:#bdbdbd transparent}
@@ -455,45 +453,38 @@ body:has(.home) footer{font-size:2.6vw}
   .about-wardrobe::-webkit-scrollbar-button{display:none}
   .about-wardrobe::-webkit-scrollbar-corner{background:transparent}
 }
-/* Loading uses the static campus until all first-screen resources are ready. */
-#loading-screen{font-family:Minecraft,monospace;transition:opacity .35s;gap:30px}
-.loading-logo{width:min(660px,82vw);height:auto;max-height:24svh;object-fit:contain;filter:drop-shadow(0 4px #0008)}
-.loading-panel{width:min(720px,94vw);padding:16px 12px 12px;background:#c6c6c6;border:3px solid #111;box-shadow:inset 3px 3px #fff,inset -3px -3px #555,3px 4px #111;color:#444;text-shadow:none}
-.loading-panel h1{text-align:center;font-size:24px;margin:0 0 12px}
-.loading-inset{padding:14px 22px 24px;background:#101010d9;border:2px solid;border-color:#555 #fff #fff #555;color:#fff;text-shadow:2px 2px #333}
-.loading-inset p{font-size:23px;line-height:1.3;min-height:86px;margin:0 0 24px}
-.experience-bar{height:12px;background:repeating-linear-gradient(90deg,transparent 0 24px,#000b 24px 27px),#263014;border:2px solid #10150b;box-shadow:0 2px #000;position:relative;overflow:hidden}
-.experience-fill{width:0;height:100%;background:repeating-linear-gradient(90deg,transparent 0 24px,#223808 24px 27px),linear-gradient(#d7f298 0 25%,#91c94d 25% 70%,#4f7d22 70%);transition:width .3s ease-out}
-#loading-screen.loading-complete{opacity:0;pointer-events:none}
-.loading-panel .loading-retry{margin:12px auto 0;font-size:18px}
-.loading-retry[hidden]{display:none}
-@media(max-width:600px){#loading-screen{gap:20px;padding:18px}.loading-panel h1{font-size:20px}.loading-inset{padding:14px}.loading-inset p{font-size:17px;min-height:72px;margin-bottom:20px}}
-@media(prefers-reduced-motion:reduce){#loading-screen,.experience-fill{transition:none}}
-.about-wardrobe{padding-bottom:90px!important}
-.about-wardrobe .about-done{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:16px 0 max(18px,env(safe-area-inset-bottom));background:linear-gradient(transparent,#0009);pointer-events:none}
-.about-wardrobe .about-done button{pointer-events:auto}
-/* Reference loading layout, measured on its 1200 × 675 canvas. */
-#loading-screen{--load-unit:min(.083333vw,.148148svh);--load-top:calc((100svh - 675 * var(--load-unit))/2);padding:0;gap:0;transition:opacity .2s}
-.loading-logo{position:absolute;left:50%;top:calc(var(--load-top) + 20 * var(--load-unit));transform:translateX(-50%);width:calc(660 * var(--load-unit));height:calc(180 * var(--load-unit));max-height:none;object-fit:contain;filter:none}
-.loading-panel{position:absolute;left:50%;top:calc(var(--load-top) + 214 * var(--load-unit));transform:translateX(-50%);width:calc(720 * var(--load-unit));height:calc(244 * var(--load-unit));padding:0;border:calc(3 * var(--load-unit)) solid #111;background:#c6c6c6;box-shadow:inset calc(3 * var(--load-unit)) calc(3 * var(--load-unit)) #fff,inset calc(-3 * var(--load-unit)) calc(-3 * var(--load-unit)) #555,calc(3 * var(--load-unit)) calc(4 * var(--load-unit)) #111}
-.loading-panel h1{position:absolute;top:calc(18 * var(--load-unit));left:0;right:0;font-size:calc(24 * var(--load-unit));line-height:1;margin:0}
-.loading-inset{position:absolute;left:calc(12 * var(--load-unit));right:calc(12 * var(--load-unit));top:calc(50 * var(--load-unit));bottom:calc(12 * var(--load-unit));padding:calc(10 * var(--load-unit)) calc(22 * var(--load-unit));background:#000c;border:calc(2 * var(--load-unit)) solid;border-color:#555 #fff #fff #555}
-.loading-inset p{font-size:calc(24 * var(--load-unit));line-height:1.08;min-height:0;margin:0;text-shadow:calc(2 * var(--load-unit)) calc(2 * var(--load-unit)) #333}
-.experience-bar{position:absolute;left:calc(32 * var(--load-unit));right:calc(32 * var(--load-unit));bottom:calc(28 * var(--load-unit));height:calc(10 * var(--load-unit));border:calc(1 * var(--load-unit)) solid #111;background:#24331c url('/experience-empty.webp') left center repeat-x;background-size:calc(28 * var(--load-unit)) 100%;box-shadow:0 calc(1 * var(--load-unit)) #000;image-rendering:pixelated}
-.experience-fill{height:100%;background:url('/experience-filled.webp') left center repeat-x;background-size:calc(28 * var(--load-unit)) 100%;transition:width .5s linear;image-rendering:pixelated}
-.album-cover{filter:none;clip-path:none}
-.loading-panel .loading-retry{position:absolute;left:50%;top:100%;transform:translateX(-50%)}
-@media(max-width:600px){#loading-screen{--load-unit:calc(100vw / 800)}.loading-panel{width:94vw}.loading-logo{width:86vw}.loading-panel h1{font-size:20px}.loading-inset p{font-size:16px;line-height:1.35}}
-@media(prefers-reduced-motion:reduce){.experience-fill{transition:none}}
-.loading-logo{top:calc(var(--load-top) + 58 * var(--load-unit));height:calc(145 * var(--load-unit));object-fit:fill}
-.loading-panel h1{font-size:calc(28 * var(--load-unit))}
-.loading-inset{background-image:linear-gradient(#000c,#000c),url('/campus-preview.webp');background-position:center;background-size:cover;background-attachment:fixed;padding-left:calc(24 * var(--load-unit));padding-right:calc(24 * var(--load-unit))}
-.loading-inset p{font-size:calc(26 * var(--load-unit))}
-@media(max-width:600px){.loading-panel h1{font-size:20px}.loading-inset p{font-size:16px}}
 
-.experience-fill{width:100%;clip-path:inset(0 98% 0 0);transition:none;will-change:clip-path}
+.about-wardrobe{padding-bottom:90px!important}
+.about-done{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:16px 0 max(18px,env(safe-area-inset-bottom));background:linear-gradient(transparent,#0009);pointer-events:none}
+.about-done button{pointer-events:auto}
+
+.album-cover{filter:none;clip-path:none}
+
 
 .wardrobe-callout{position:absolute;left:calc(50% + 28px);bottom:7px;display:flex;align-items:center;gap:8px;color:#ffff00;white-space:nowrap;pointer-events:none;text-shadow:2px 2px #555500}
 .wardrobe-callout>span{display:block;font-size:16px;transform:rotate(-8deg);animation:splash-pop 1s linear infinite}
 .wardrobe-callout>svg{width:28px;height:12px;fill:none;stroke:currentColor;stroke-width:2;shape-rendering:crispEdges;flex:none}
 @media(max-width:760px){.wardrobe-callout{left:calc(50% + 24px);gap:5px;bottom:10px}.wardrobe-callout>span{font-size:12px}.wardrobe-callout>svg{width:20px}}
+.wardrobe-callout{color:#fff;text-shadow:2px 2px #333;animation:splash-pop 1s linear infinite;transform-origin:left center}
+.wardrobe-callout>span{transform:none;animation:none}
+.wardrobe-callout>svg{width:20px;height:14px;stroke-width:3.5;stroke-linecap:square;stroke-linejoin:miter}
+@media(max-width:760px){.wardrobe-callout>svg{width:17px;height:13px}}
+.wardrobe-screen.about-wardrobe{padding-top:24px;scrollbar-gutter:stable both-edges}
+.about-wardrobe .about-layout{min-height:max(400px,calc(100svh - 340px));margin:12px auto}
+.favorite-music{padding-top:24px}
+@media(max-width:760px){.about-wardrobe .about-layout{min-height:0}}
+@media(min-width:761px) and (max-height:760px){.about-bio{padding:12px 0}.about-bio p{font-size:16px;line-height:1.65;margin-bottom:14px}.about-bio h2{margin-bottom:18px}}
+/* White startup screen, matching the 2019–2020 reference. */
+#loading-screen{background:#fff;color:#000;padding:0;gap:0;text-shadow:none;transition:opacity .2s}
+.loading-name{position:absolute;left:50%;top:61%;transform:translate(-50%,-50%);margin:0;font-family:Arial,Helvetica,sans-serif;font-weight:900;font-size:clamp(54px,11.5vw,160px);line-height:1;letter-spacing:-.065em;white-space:nowrap}
+.experience-bar{position:absolute;left:14.25%;top:75%;width:71.5%;height:clamp(14px,3.1svh,28px);padding:1px;border:2px solid #333;background:#fff;overflow:hidden}
+.experience-fill{width:100%;height:100%;background:#ef4035;clip-path:inset(0 98% 0 0);will-change:clip-path}
+#loading-screen.loading-complete{opacity:0;pointer-events:none}
+.loading-error{position:absolute;left:20px;right:20px;top:81%;margin:0;text-align:center;font-size:16px;color:#555}
+#loading-screen .loading-retry{position:absolute;left:50%;top:88%;transform:translateX(-50%);font-size:18px}
+.loading-retry[hidden],.loading-error[hidden]{display:none}
+@media(max-width:600px){.experience-bar{padding:1px;border-width:1px}.loading-error{font-size:12px}}
+@media(prefers-reduced-motion:reduce){#loading-screen{transition:none}}
+
+.loading-name{display:flex;align-items:center;gap:.06em;font-size:clamp(44px,11.6vw,190px)}
+.loading-name img{width:.95em;height:.95em;object-fit:contain;flex:none}
