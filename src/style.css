@@ -28,7 +28,7 @@
 .world-screen.screen .world-actions>:last-child{grid-column:2 / 4}
 .world-screen.screen .world-actions button,.world-screen.screen .world-actions .button{width:100%;min-width:0;min-height:0;height:calc(20 * var(--gui-scale));font-size:calc(13 * var(--gui-scale))!important;line-height:1;padding:0 2px calc(1 * var(--gui-scale));white-space:nowrap;border:0;border-image:none;box-shadow:none!important;background:transparent!important;border-image-source:url('/minecraft/assets/minecraft/textures/gui/sprites/widget/button.png');border-image-slice:2 fill;border-image-width:calc(2 * var(--gui-scale));border-image-repeat:stretch;text-shadow:calc(1 * var(--gui-scale)) calc(1 * var(--gui-scale)) #383838}
 .world-screen.screen .world-actions button:disabled,.world-screen.screen .world-actions [aria-disabled=true]{border-image-source:url('/minecraft/assets/minecraft/textures/gui/sprites/widget/button_disabled.png')}
-.world-screen.screen .world-actions button:enabled:hover,.world-screen.screen .world-actions a[aria-disabled=false]:hover{border-image-source:url('/minecraft/assets/minecraft/textures/gui/sprites/widget/button_highlighted.png')}
+.world-screen.screen .world-actions button:enabled:hover,.world-screen.screen .world-actions a[aria-disabled=false]:hover{border-image-source:url('/minecraft/assets/minecraft/textures/gui/sprites/widget/button.png')}
 .world-screen.screen .destination-note{position:absolute;bottom:2px;font-size:16px}
 /* Title is roughly 1.3 times the full-width menu, like the Java title screen. */
 .home{--menu-width:408px;--title-width:540px}
@@ -83,7 +83,7 @@ button:not(.world):not(.achievement button),a.button{
 }
 button:not(.world):not(.achievement button):hover,a.button:hover,
 button:not(.world):not(.achievement button):focus-visible,a.button:focus-visible{
-  background-color:#7e86bd;background-image:linear-gradient(#747db766,#747db766),url('/button-reference.svg');
+  background-color:#808080;background-image:url('/button-reference.svg');
   color:#ffffa0;box-shadow:inset 2px 2px #c6c9eb,inset -2px -2px #454971;
   outline:none;
 }
@@ -218,7 +218,7 @@ button.sound{font-size:14px;min-height:32px}
 /* Standard menu buttons retain their gray texture and white text on hover. */
 button:not(.world):not(.skill-node):not(.advancement-tab):not(:disabled):hover,
 button:not(.world):not(.skill-node):not(.advancement-tab):not(:disabled):focus-visible,
-a.button:hover,a.button:focus-visible{background:#808080 url('/button-reference.svg') repeat;background-size:120px 28px;color:#eee;box-shadow:inset 2px 2px #aaa,inset -2px -2px #505050;outline:2px solid #fff;outline-offset:-2px}
+a.button:hover,a.button:focus-visible{background-color:#808080;background-image:url('/button-reference.svg');color:#eee;box-shadow:inset 2px 2px #aaa,inset -2px -2px #505050;outline:2px solid #fff;outline-offset:-2px}
 /* About Me uses a Minecraft social-menu panel over the live panorama. */
 .about-screen{position:fixed;inset:0;padding:32px clamp(16px,6vw,100px) 20px;display:grid;place-items:center;background:#0006}
 .about-dialog{width:min(1100px,100%);height:min(860px,100%);min-height:0;display:flex;flex-direction:column}
@@ -373,8 +373,8 @@ body:has(.home) footer{font-size:2.6vw}
 .experience-book-screen button.book-page-arrow{pointer-events:auto;min-height:0;width:calc(23 * var(--book-scale));height:calc(13 * var(--book-scale));border:0;padding:0;box-shadow:none;outline:none;background-color:transparent;background-repeat:no-repeat;background-size:100% 100%;image-rendering:pixelated}
 .experience-book-screen button.book-page-arrow.previous{background-image:url('/minecraft/assets/minecraft/textures/gui/sprites/widget/page_backward.png')}
 .experience-book-screen button.book-page-arrow.next{margin-left:auto;background-image:url('/minecraft/assets/minecraft/textures/gui/sprites/widget/page_forward.png')}
-.experience-book-screen button.book-page-arrow.previous:hover,.experience-book-screen button.book-page-arrow.previous:focus-visible{background-image:url('/minecraft/assets/minecraft/textures/gui/sprites/widget/page_backward_highlighted.png');background-color:transparent;box-shadow:none;outline:none}
-.experience-book-screen button.book-page-arrow.next:hover,.experience-book-screen button.book-page-arrow.next:focus-visible{background-image:url('/minecraft/assets/minecraft/textures/gui/sprites/widget/page_forward_highlighted.png');background-color:transparent;box-shadow:none;outline:none}
+.experience-book-screen button.book-page-arrow.previous:hover,.experience-book-screen button.book-page-arrow.previous:focus-visible{background-image:url('/minecraft/assets/minecraft/textures/gui/sprites/widget/page_backward.png');background-color:transparent;box-shadow:none;outline:none}
+.experience-book-screen button.book-page-arrow.next:hover,.experience-book-screen button.book-page-arrow.next:focus-visible{background-image:url('/minecraft/assets/minecraft/textures/gui/sprites/widget/page_forward.png');background-color:transparent;box-shadow:none;outline:none}
 /* Book arrows are bare native sprites, never standard menu buttons. */
 .experience-book-screen .book-navigation button.book-page-arrow,
 .experience-book-screen .book-navigation button.book-page-arrow:hover,
@@ -382,8 +382,8 @@ body:has(.home) footer{font-size:2.6vw}
 .experience-book-screen .book-navigation button.book-page-arrow:active{border:0!important;border-image:none!important;background-color:transparent!important;background-size:100% 100%!important;background-position:0 0!important;background-repeat:no-repeat!important;box-shadow:none!important;outline:none!important;padding:0!important;transform:none!important}
 .experience-book-screen .book-navigation button.book-page-arrow.previous{background-image:url('/minecraft/assets/minecraft/textures/gui/sprites/widget/page_backward.png')!important}
 .experience-book-screen .book-navigation button.book-page-arrow.next{background-image:url('/minecraft/assets/minecraft/textures/gui/sprites/widget/page_forward.png')!important}
-.experience-book-screen .book-navigation button.book-page-arrow.previous:hover,.experience-book-screen .book-navigation button.book-page-arrow.previous:focus-visible{background-image:url('/minecraft/assets/minecraft/textures/gui/sprites/widget/page_backward_highlighted.png')!important}
-.experience-book-screen .book-navigation button.book-page-arrow.next:hover,.experience-book-screen .book-navigation button.book-page-arrow.next:focus-visible{background-image:url('/minecraft/assets/minecraft/textures/gui/sprites/widget/page_forward_highlighted.png')!important}
+.experience-book-screen .book-navigation button.book-page-arrow.previous:hover,.experience-book-screen .book-navigation button.book-page-arrow.previous:focus-visible{background-image:url('/minecraft/assets/minecraft/textures/gui/sprites/widget/page_backward.png')!important}
+.experience-book-screen .book-navigation button.book-page-arrow.next:hover,.experience-book-screen .book-navigation button.book-page-arrow.next:focus-visible{background-image:url('/minecraft/assets/minecraft/textures/gui/sprites/widget/page_forward.png')!important}
 
 /* Immediate backdrop while the rotating campus initializes. */
 #panorama{background:#7899ac url('/campus-preview.webp') center / cover no-repeat}

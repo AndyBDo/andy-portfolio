@@ -103,3 +103,18 @@ test('saved outfit survives reload without a default-fit placeholder',async({pag
   await expect(page.locator('.outfit-name')).toHaveText('Cornell sweatshirt + black pants + white vans',{timeout:20000});
   await expect(page.locator('.player-stage img')).toHaveCount(0);
 });
+
+
+test('home uses the root URL and keeps back and forward navigation working',async({page})=>{
+  await page.goto('/#home');
+  await expect(page).toHaveURL('http://localhost:5180/');
+  await page.getByRole('button',{name:'About Me',exact:true}).click();
+  await page.getByRole('button',{name:'Done',exact:true}).click();
+  await expect(page).toHaveURL('http://localhost:5180/');
+  await expect(page.getByRole('button',{name:'About Me',exact:true})).toBeVisible();
+  await page.goBack();
+  await expect(page.getByRole('heading',{name:'About Me',exact:true})).toBeVisible();
+  await page.goForward();
+  await expect(page).toHaveURL('http://localhost:5180/');
+  await expect(page.getByRole('button',{name:'About Me',exact:true})).toBeVisible();
+});

@@ -46,7 +46,7 @@ function fitHomeSplash(){
   app.querySelector('.brand img').addEventListener('load',fit,{once:true});
 }
 addEventListener('resize',fitHomeSplash);
-function go(route){location.hash=route;}
+function go(route){location.hash=route==='home'?'':route;}
 function mountPlayer(host){
   let cancelled=false,dispose=()=>{};
   // Paint the WebP preview and menu before downloading or creating a WebGL context.
@@ -69,7 +69,7 @@ const routes={
 };
 app.addEventListener('pointerover',event=>routes[event.target.closest('[data-action]')?.dataset.action]?.());
 app.addEventListener('focusin',event=>routes[event.target.closest('[data-action]')?.dataset.action]?.());
-async function render(){disposePlayer();disposePlayer=()=>{};const [page='home',id]=location.hash.slice(1).split('/');const home=page==='home'||!page;document.body.classList.toggle('secondary',!home);
+async function render(){disposePlayer();disposePlayer=()=>{};const [page='home',id]=location.hash.slice(1).split('/');const home=page==='home'||!page;if(home&&(location.hash||location.href.endsWith('#')))history.replaceState(null,'',location.pathname+location.search);document.body.classList.toggle('secondary',!home);
 if(home){app.innerHTML=`<section class="home"><div class="brand"><img src="${logoUrl}" alt="Andy Do — Portfolio Edition"><span class="splash">${splash}</span></div><nav class="menu" aria-label="Main menu">${['About Me','Work Experience','Projects','Advancements','Contact','Resume'].map((s,i)=>button(s,['about','work','projects','advancements','contact','resume'][i])).join('')}</nav>${playerMarkup()}</section><footer><span>Andy Do 1.0</span><span>Copyright Andy Do. Please DO distribute!</span></footer>`;fitHomeSplash();disposePlayer=mountPlayer(app.querySelector('.player-stage'));return;}
 if(page==='wardrobe'){app.innerHTML=`<section class="wardrobe-screen"><h1>Wardrobe</h1><p class="wardrobe-subtitle">(my favorite fits!)</p>${playerMarkup(true)}</section>`;disposePlayer=mountPlayer(app.querySelector('.player-stage'));return;}
 let title='',body='',actions='';
