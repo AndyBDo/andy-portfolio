@@ -7,7 +7,7 @@ export function initBackgroundMusic(app){
   effects.id='interface-sound';effects.preload='none';effects.volume=.3;effects.hidden=true;
   document.body.append(music,effects);
   let musicEnabled=true,soundEnabled=true;
-  try{musicEnabled=localStorage.getItem('andy-music')!=='off';soundEnabled=localStorage.getItem('andy-sound')!=='off';}catch{}
+  try{soundEnabled=localStorage.getItem('andy-sound')!=='off';}catch{}
   const controls=document.createElement('div');controls.className='audio-controls';controls.setAttribute('role','group');controls.setAttribute('aria-label','Audio controls');
   const slash='<svg class="audio-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3L21 21" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
   controls.innerHTML=`<button type="button" class="music-toggle"><img class="audio-icon" src="${musicIcon}" alt="" width="28" height="28">${slash}</button><button type="button" class="sound-toggle"><img class="audio-icon" src="${soundIcon}" alt="" width="28" height="28">${slash}</button>`;
@@ -37,7 +37,7 @@ export function initBackgroundMusic(app){
   musicButton.addEventListener('click',()=>{
     if(!music.paused){musicEnabled=false;music.pause();}
     else{musicEnabled=true;start();}
-    save('andy-music',musicEnabled);syncMusic();
+    syncMusic();
   });
   soundButton.addEventListener('click',()=>{
     soundEnabled=!soundEnabled;save('andy-sound',soundEnabled);

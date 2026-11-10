@@ -1,7 +1,8 @@
 import {test,expect} from '@playwright/test';
 test.use({launchOptions:{args:['--autoplay-policy=no-user-gesture-required']}});
 
-test('Sweden starts after loading, loops, and keeps playing between sections',async({page})=>{
+test('Sweden starts after loading even with an older muted preference, loops, and continues between sections',async({page})=>{
+  await page.addInitScript(()=>localStorage.setItem('andy-music','off'));
   let release;const gate=new Promise(resolve=>{release=resolve;});
   await page.route('**/src/cornell*',async route=>{await gate;await route.continue();});
   const requests=[];page.on('request',r=>{if(r.url().includes('/audio/sweden.ogg'))requests.push(r.url());});
@@ -17,7 +18,7 @@ test('Sweden starts after loading, loops, and keeps playing between sections',as
   expect(await music.evaluate(audio=>audio.currentTime)).toBeGreaterThanOrEqual(before);
 });
 
-test('music button starts blocked autoplay and remembers mute',async({page})=>{
+test('music button starts blocked autoplay and defaults on again after reload',async({page})=>{
   await page.addInitScript(()=>{
     let interacted=false;document.addEventListener('pointerdown',()=>{interacted=true;},true);document.addEventListener('keydown',()=>{interacted=true;},true);
     const play=HTMLMediaElement.prototype.play;
@@ -29,8 +30,8 @@ test('music button starts blocked autoplay and remembers mute',async({page})=>{
   await expect.poll(()=>music.evaluate(audio=>!audio.paused&&audio.currentTime>0),{timeout:15000}).toBe(true);
   await page.getByRole('button',{name:'Mute music',exact:true}).click();expect(await music.evaluate(audio=>audio.paused)).toBe(true);
   await page.reload();await expect(page.locator('#loading-screen')).toHaveCount(0,{timeout:60000});
-  await page.getByRole('button',{name:'About Me',exact:true}).click();expect(await music.evaluate(audio=>audio.paused)).toBe(true);
-  await expect(page.getByRole('button',{name:'Play music',exact:true})).toHaveAttribute('aria-pressed','false');
+  await page.getByRole('button',{name:'About Me',exact:true}).click();
+  await expect.poll(()=>music.evaluate(audio=>!audio.paused&&audio.currentTime>0),{timeout:15000}).toBe(true);
 });
 
 test('sound effects toggle is independent from music and remembers its setting',async({page})=>{
